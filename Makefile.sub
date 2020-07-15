@@ -1,0 +1,15 @@
+#This Makefile is actually performs the build according to dependencies, that are created in main makefile for
+#directory
+
+include Makefile.defs
+
+include $(DEPS)
+
+$(CORE_DLL_FILE): $(OBJS)
+	ar cru $(CORE_DLL_FILE) $(OBJS)
+	ranlib $(CORE_DLL_FILE)
+
+$(OBJS_DIR)/%.o:
+	g++ $(CXXFLAGS) -c $< -o $@
+
+

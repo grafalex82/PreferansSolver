@@ -1,0 +1,26 @@
+#This part of makefile is intended only for providing the variables, that are needed to build
+#This only file to be managed during development
+
+#List of source files
+SOURCES             :=  CardPack.cpp \
+                        Game.cpp \
+                        Player.cpp \
+                        Score.cpp
+
+#Configuration and build related
+SRC_DIR             :=  .
+OBJS_DIR            :=  .obj
+DEPS_DIR            :=  .dep
+
+OBJS                :=  $(patsubst %.cpp,$(OBJS_DIR)/%.o,$(SOURCES))
+DEPS                :=  $(patsubst %.cpp,$(DEPS_DIR)/%.d,$(SOURCES))
+
+CORE_DLL            :=  libPrefCore.a
+CORE_DLL_FILE       :=  $(OBJS_DIR)/$(CORE_DLL)
+
+LIB_DIR             :=  ../lib
+
+#Compiler flags
+CXXFLAGS            :=  -g -ggdb -O0 -Wall -fPIC 
+
+
