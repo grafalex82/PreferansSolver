@@ -66,7 +66,7 @@ void CCardPack::shuffle()
     
     while(vTemp.size() != 0)
     {
-        int idx = random() % vTemp.size();
+        int idx = rand() % vTemp.size();
         m_aCards[m_iCardsCount++] = vTemp[idx];
         vTemp.erase(vTemp.begin() + idx);
     }
