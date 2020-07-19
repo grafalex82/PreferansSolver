@@ -1,6 +1,26 @@
 #define CATCH_CONFIG_MAIN
 
+#include <sstream>
+
 #include <catch2/catch.hpp>
+#include "CardDefs.h"
+
+TEST_CASE( "Card functions", "Cards" )
+{
+    Card card = MAKE_CARD(CS_CLUBS, CV_KING);
+    REQUIRE(card == 0x1B); // Card internal representation
+    REQUIRE(getSuit(card) == CS_CLUBS); // getSuit()
+    REQUIRE(getSuitSymb(getSuit(card)) == '+'); //getSuitSymb()
+    REQUIRE(getCardValue(card) == CV_KING); // getCardValue()
+    REQUIRE(getCardValueSymb(getCardValue(card)) == 'K'); // getCardValueSymb()
+
+    std::stringstream str;
+    str << card;
+    REQUIRE(str.str() == "K+");
+}
+
+
+#if 0
 
 int Factorial( int number ) {
    return number <= 1 ? number : Factorial( number - 1 ) * number;  // fail
@@ -70,3 +90,5 @@ TEST_CASE( "vectors can be sized and resized", "[vector]" ) {
         REQUIRE( v.capacity() >= 5 );
     }
 }
+
+#endif
