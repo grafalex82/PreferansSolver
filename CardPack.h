@@ -213,7 +213,7 @@ public:
      *
      * @note Shuffling algorithm may be refined
      */
-    void shuffle();
+    //void shuffle();
     /**
      * @brief Remove card
      *

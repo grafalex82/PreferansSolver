@@ -56,6 +56,7 @@ std::string CCardPack::getPackStr() const
     return sRes;
 }
 
+#if 0
 void CCardPack::shuffle()
 {
     std::vector<Card> vTemp;
@@ -71,6 +72,7 @@ void CCardPack::shuffle()
         vTemp.erase(vTemp.begin() + idx);
     }
 }
+#endif //0
 
 void CCardPack::removeCard(Card card)
 {
