@@ -16,8 +16,6 @@ bool CScore::isScoreHeigher(const CScore & score, PlayerStrategy eStrategy) cons
         return (score.m_uPlayersScore.vPlayerScore[2] < m_uPlayersScore.vPlayerScore[2]);
     case PS_P3MAX:
         return (score.m_uPlayersScore.vPlayerScore[2] > m_uPlayersScore.vPlayerScore[2]);
-    default:
-        break;
     }
 
     throw "CStrategy::isScoreHeigher() Unknown strategy";    

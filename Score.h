@@ -114,9 +114,9 @@ public:
      */
     friend std::ostream& operator<< (std::ostream& out, const CScore & score)
     {
-        out << '(' << (unsigned int)score.m_uPlayersScore.vPlayerScore[0] << 
-	      ", " << (unsigned int)score.m_uPlayersScore.vPlayerScore[1] << 
-	      ", " << (unsigned int)score.m_uPlayersScore.vPlayerScore[2] << ')';
+        out << '(' << static_cast<unsigned int>(score.m_uPlayersScore.vPlayerScore[0]) <<
+          ", " << static_cast<unsigned int>(score.m_uPlayersScore.vPlayerScore[1]) <<
+          ", " << static_cast<unsigned int>(score.m_uPlayersScore.vPlayerScore[2]) << ')';
         return out;
     }
 //@}
