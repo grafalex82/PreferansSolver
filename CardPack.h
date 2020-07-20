@@ -1,5 +1,5 @@
-#ifndef _CARD_PACK_H_
-#define _CARD_PACK_H_
+#ifndef CARD_PACK_H
+#define CARD_PACK_H
 
 /**
  * @file
@@ -10,7 +10,7 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
-#include <string.h>
+#include <cstring>
 
 #include "CardDefs.h"
 
@@ -184,6 +184,23 @@ public:
     {
         return m_aCards[idx];
     }
+
+    /**
+     * @brief Check whether the given card is in the pack
+     *
+     * @param card   - card to check
+     *
+     * @return \a true if the card is in the list, \a false otherwise
+     */
+    inline bool hasCard(Card card) const
+    {
+        for(unsigned int i=0; i<m_iCardsCount; i++)
+        {
+            if(m_aCards[i] == card)
+                return true;
+        }
+        return false;
+    }
 //@}
 
 ///@name Operations
@@ -231,4 +248,4 @@ protected:
     unsigned int m_iCardsCount;
 };
 
-#endif // _CARD_PACK_H_
+#endif // CARD_PACK_H

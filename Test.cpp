@@ -37,7 +37,7 @@ TEST_CASE( "Card comparison", "Cards" )
     REQUIRE(isCardHeigher(MAKE_CARD(CS_CLUBS, CV_JACK), MAKE_CARD(CS_HEARTS, CV_KING), CS_CLUBS) == true);
 }
 
-TEST_CASE( "Card Pack creation", "Card Pack")
+TEST_CASE( "Card Pack creation and basic operations", "Card Pack")
 {
     const Card prefCards[] =
     {
@@ -69,6 +69,10 @@ TEST_CASE( "Card Pack creation", "Card Pack")
     REQUIRE(pack.getCard(0) == MAKE_CARD(CS_SPIDES, CV_7));
     REQUIRE(pack.getCard(2) == MAKE_CARD(CS_SPIDES, CV_9));
     REQUIRE(pack.getCard(6) == MAKE_CARD(CS_SPIDES, CV_KING));
+
+    // Check hasCard()
+    REQUIRE(pack.hasCard(MAKE_CARD(CS_SPIDES, CV_7)) == true);
+    REQUIRE(pack.hasCard(MAKE_CARD(CS_CLUBS, CV_7)) == false);
 }
 
 TEST_CASE( "Card Pack additions", "Card Pack")
