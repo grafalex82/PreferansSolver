@@ -147,7 +147,24 @@ TEST_CASE("Check main CScore operations", "Score")
     REQUIRE((score < score2) == false);
     REQUIRE((score2 < score) == true);
 
-    // Compare scores according to player strategy
-    REQUIRE(score2.isScoreHeigher(score, PS_P1MAX) == true);
-    REQUIRE(score2.isScoreHeigher(score, PS_P1MIN) == false);
+}
+
+TEST_CASE("CScore player strategies", "Score")
+{
+    CScore score1;
+    score1.setPlayerScore(0, 3);
+    score1.setPlayerScore(1, 2);
+    score1.setPlayerScore(2, 1);
+
+    CScore score2;
+    score2.setPlayerScore(0, 2);
+    score2.setPlayerScore(1, 3);
+    score2.setPlayerScore(2, 4);
+
+    REQUIRE(score1.isScoreHeigher(score2, PS_P1MAX) == false);
+    REQUIRE(score1.isScoreHeigher(score2, PS_P1MIN) == true);
+    REQUIRE(score1.isScoreHeigher(score2, PS_P2MAX) == true);
+    REQUIRE(score1.isScoreHeigher(score2, PS_P2MIN) == false);
+    REQUIRE(score1.isScoreHeigher(score2, PS_P3MAX) == true);
+    REQUIRE(score1.isScoreHeigher(score2, PS_P3MIN) == false);
 }
