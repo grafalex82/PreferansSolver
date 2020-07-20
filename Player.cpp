@@ -144,7 +144,7 @@ Card CPlayer::getOptimalTurn(CGame * pGame, CScore & retScore, bool bFirstHand)
             continue;
         }
         
-        if(cardsLeft.compareCards(lastCard, availCardsPre[i]))
+        if(cardsLeft.areCardsEquivalent(lastCard, availCardsPre[i]))
         {
             lastCard = availCardsPre[i];
             continue;

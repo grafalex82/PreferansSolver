@@ -89,19 +89,21 @@ void CCardPack::removeCard(Card card)
     }
 }
 
-bool CCardPack::compareCards(Card left, Card right) const
+bool CCardPack::areCardsEquivalent(Card left, Card right) const
 {
+    // Cards with different suit cannot be equivalent
     if(getSuit(left) != getSuit(right))
         return false;
 
+    // Check that provided cards are located next to each other
     for(unsigned int i=0; i < m_iCardsCount - 1; i++)
     {
-        if(m_aCards[i] != left)
+        if(m_aCards[i] != left && m_aCards[i] != right)
             continue;
         
-        if(m_aCards[i+1] == right)
+        if(m_aCards[i+1] == right || m_aCards[i+1] == left)
             return true;
-        
+
         return false;
     }
     

@@ -224,6 +224,7 @@ public:
      * @param card - card to be removed
      */
     void removeCard(Card card);
+
     /**
      * @brief compare two cards and check their equivalence
      *
@@ -238,7 +239,7 @@ public:
      *
      * @return \a true if cards are equivalent, \a false otherwise
      */    
-    bool compareCards(Card left, Card right) const;
+    bool areCardsEquivalent(Card left, Card right) const;
 //@}
 
 protected:

@@ -114,6 +114,31 @@ TEST_CASE( "Card Pack additions/removal", "Card Pack")
     REQUIRE(pack.getPackStr() == " 7^ 8^ 1^ J^ Q^ A^");
 }
 
+TEST_CASE( "Card Pack - card equivalence", "Card Pack")
+{
+    const Card prefCards[] =
+    {
+        MAKE_CARD(CS_SPIDES, CV_7),
+        MAKE_CARD(CS_SPIDES, CV_8),
+        MAKE_CARD(CS_SPIDES, CV_9),
+        MAKE_CARD(CS_SPIDES, CV_QUEEN),
+        MAKE_CARD(CS_SPIDES, CV_KING),
+        MAKE_CARD(CS_SPIDES, CV_ACE),
+        MAKE_CARD(CS_CLUBS, CV_ACE)
+    };
+    CCardPack pack(prefCards, sizeof(prefCards) / sizeof(Card));
+
+    // Cards located next to each other are equivalent regardless of their value
+    REQUIRE(pack.areCardsEquivalent(MAKE_CARD(CS_SPIDES, CV_7), MAKE_CARD(CS_SPIDES, CV_8)));
+    REQUIRE(pack.areCardsEquivalent(MAKE_CARD(CS_SPIDES, CV_9), MAKE_CARD(CS_SPIDES, CV_QUEEN)));
+
+    // Cards located separately cannot be equivalent (TODO: unless they belong to the same player)
+    REQUIRE(pack.areCardsEquivalent(MAKE_CARD(CS_SPIDES, CV_7), MAKE_CARD(CS_SPIDES, CV_QUEEN)) == false);
+
+    // Cards of different suits can't be equivalent
+    REQUIRE(pack.areCardsEquivalent(MAKE_CARD(CS_SPIDES, CV_ACE), MAKE_CARD(CS_CLUBS, CV_ACE)) == false);
+}
+
 TEST_CASE("Check main CScore operations", "Score")
 {
     // Create and fill score object
