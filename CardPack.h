@@ -10,6 +10,7 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include <string.h>
 
 #include "CardDefs.h"
 
@@ -105,6 +106,20 @@ public:
         return false;
     }
 
+    /**
+     * @brief equivalence operator
+     *
+     * This operator will compare two card packs and return true if they are equal
+     *
+     * @param rPack - another pack to compare with.
+     *
+     * @return \a true if current pack is equal, \a false otherwise
+     */
+    inline bool operator==(const CCardPack & rPack) const
+    {
+        return m_iCardsCount == rPack.m_iCardsCount &&
+                memcmp(m_aCards, rPack.m_aCards, m_iCardsCount) == 0;
+    }
     /// Serialization operator. It stores the cards pack as a string (each card separated by space) to the stream.
     friend inline std::ostream& operator<< (std::ostream& out, const CCardPack & cardPack)
     {

@@ -21,6 +21,7 @@ SET(SOURCE_FILES
 	Score.h
 
 	Test.cpp
+        TestRunner.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

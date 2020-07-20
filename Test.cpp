@@ -1,9 +1,8 @@
-#define CATCH_CONFIG_MAIN
-
 #include <sstream>
 
 #include <catch2/catch.hpp>
 #include "CardDefs.h"
+#include "CardPack.h"
 
 TEST_CASE( "Card functions", "Cards" )
 {
@@ -19,6 +18,34 @@ TEST_CASE( "Card functions", "Cards" )
     REQUIRE(str.str() == "K+");
 }
 
+TEST_CASE( "Card Pack creation", "Card Pack")
+{
+    const Card prefCards[] =
+    {
+        MAKE_CARD(CS_SPIDES, CV_7),
+        MAKE_CARD(CS_SPIDES, CV_8),
+        MAKE_CARD(CS_SPIDES, CV_9),
+        MAKE_CARD(CS_SPIDES, CV_10),
+        MAKE_CARD(CS_SPIDES, CV_JACK),
+        MAKE_CARD(CS_SPIDES, CV_QUEEN),
+        MAKE_CARD(CS_SPIDES, CV_KING),
+        MAKE_CARD(CS_SPIDES, CV_ACE)
+    };
+
+    // Check card pack creation
+    CCardPack pack(prefCards, sizeof(prefCards) / sizeof(Card));
+    REQUIRE(pack.getCardsCount() == 8);
+
+    // Check card pack copying
+    CCardPack pack2 = pack;
+    REQUIRE(pack2.getCardsCount() == 8);
+
+    // Check card pack printing
+    REQUIRE(pack2.getPackStr() == " 7^ 8^ 9^ 1^ J^ Q^ K^ A^");
+
+    // Check that copied packs are equivalent
+    REQUIRE(pack == pack2);
+}
 
 #if 0
 

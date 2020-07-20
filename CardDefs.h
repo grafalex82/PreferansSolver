@@ -1,5 +1,5 @@
-#ifndef _CARD_DEFS_H_
-#define _CARD_DEFS_H_
+#ifndef CARD_DEFS_H
+#define CARD_DEFS_H
 
 /**
  * @file
@@ -41,9 +41,9 @@ const Card CARD_SUIT_MASK = 0xf0;
  *
  * @return suit of the specified card
  */
-inline CardSuit getSuit(const Card card)
+inline CardSuit getSuit(Card card)
 {
-    return (CardSuit)(card & CARD_SUIT_MASK);
+    return static_cast<CardSuit>(card & CARD_SUIT_MASK);
 }
 
 /// Symbol for Spides suit
@@ -67,7 +67,7 @@ const char SUIT_SYMB_HEARTS = '@';
  *
  * @return the suit symbol
  */
-inline const char getSuitSymb(const CardSuit suit)
+inline char getSuitSymb(CardSuit suit)
 {
     switch(suit)
     {
@@ -132,9 +132,9 @@ const unsigned char CARD_VALUE_MASK = 0x0f;
  *
  * @return the card value
  */
-inline CardValue getCardValue(const Card card)
+inline CardValue getCardValue(Card card)
 {
-    return (CardValue)(card & 0x0f);
+    return static_cast<CardValue>(card & 0x0f);
 }
 
 /// Symbols for card values
@@ -151,16 +151,16 @@ const char cardValueChars[] = {'2', '3', '4', '5', '6', '7', '8', '9', '1', 'J',
  *
  * @return The symbol, that represents the card value
  */
-inline const char getCardValueSymb(const CardValue v)
+inline char getCardValueSymb(CardValue v)
 {
     if(v <= CV_ACE)
-	    return cardValueChars[(unsigned int)v];
+        return cardValueChars[static_cast<size_t>(v)];
     
     throw "getCardValueSymb(): unknown card value";
 }
 
 /// Macro for making the whole card value from card suit and card value
-#define MAKE_CARD(suit, value) (Card)((suit&0xf0) | (value & 0x0f))
+#define MAKE_CARD(suit, value) static_cast<Card>((suit&0xf0) | (value & 0x0f))
 
 /**
  * @brief Card serialization operator
@@ -219,5 +219,5 @@ inline bool isCardHeigher(Card card, Card ref, CardSuit trump)
 }
 
 
-#endif //_CARD_DEFS_H_
+#endif //CARD_DEFS_H
 
