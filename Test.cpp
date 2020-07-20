@@ -64,6 +64,11 @@ TEST_CASE( "Card Pack creation", "Card Pack")
 
     // Check that copied packs are equivalent
     REQUIRE(pack == pack2);
+
+    // Check that cards can be retrieved
+    REQUIRE(pack.getCard(0) == MAKE_CARD(CS_SPIDES, CV_7));
+    REQUIRE(pack.getCard(2) == MAKE_CARD(CS_SPIDES, CV_9));
+    REQUIRE(pack.getCard(6) == MAKE_CARD(CS_SPIDES, CV_KING));
 }
 
 TEST_CASE( "Card Pack additions", "Card Pack")
