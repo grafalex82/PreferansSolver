@@ -66,75 +66,28 @@ TEST_CASE( "Card Pack creation", "Card Pack")
     REQUIRE(pack == pack2);
 }
 
-#if 0
+TEST_CASE( "Card Pack additions", "Card Pack")
+{
+    // Make 2 non-intersecting card packs
+    const Card pack1Cards[] =
+    {
+        MAKE_CARD(CS_SPIDES, CV_7),
+        MAKE_CARD(CS_SPIDES, CV_8),
+        MAKE_CARD(CS_SPIDES, CV_QUEEN),
+        MAKE_CARD(CS_SPIDES, CV_KING)
+    };
+    CCardPack pack1(pack1Cards, sizeof(pack1Cards) / sizeof(Card));
 
-int Factorial( int number ) {
-   return number <= 1 ? number : Factorial( number - 1 ) * number;  // fail
-// return number <= 1 ? 1      : Factorial( number - 1 ) * number;  // pass
+    const Card pack2Cards[] =
+    {
+        MAKE_CARD(CS_SPIDES, CV_9),
+        MAKE_CARD(CS_SPIDES, CV_10),
+        MAKE_CARD(CS_SPIDES, CV_JACK),
+        MAKE_CARD(CS_SPIDES, CV_ACE)
+    };
+    CCardPack pack2(pack2Cards, sizeof(pack2Cards) / sizeof(Card));
+
+    // Add card packs and check the result has all the cards, and it is sorted
+    CCardPack pack = pack1 + pack2;
+    REQUIRE(pack.getPackStr() == " 7^ 8^ 9^ 1^ J^ Q^ K^ A^");
 }
-
-//TEST_CASE( "Factorial of 0 is 1 (fail)", "[single-file]" ) {
-//    REQUIRE( Factorial(0) == 1 );
-//}
-
-TEST_CASE( "Factorials of 1 and higher are computed (pass)", "[single-file]" ) {
-    REQUIRE( Factorial(1) == 1 );
-    REQUIRE( Factorial(2) == 2 );
-    REQUIRE( Factorial(3) == 6 );
-    REQUIRE( Factorial(10) == 3628800 );
-}
-
-
-std::string one() {
-    return "1";
-}
-
-TEST_CASE( "Assert that something is true (pass)", "[require]" ) {
-    REQUIRE( one() == "1" );
-}
-
-TEST_CASE( "Assert that something is true (fail)", "[require]" ) {
-    REQUIRE( one() == "x" );
-}
-
-TEST_CASE( "Assert that something is true (continue after failure)", "[check]" ) {
-    WARN( "CHECK continues after failure:" );
-
-    CHECK(   one() == "x" );
-    REQUIRE( one() == "1" );
-}
-
-TEST_CASE( "vectors can be sized and resized", "[vector]" ) {
-
-    std::vector<int> v( 5 );
-
-    REQUIRE( v.size() == 5 );
-    REQUIRE( v.capacity() >= 5 );
-
-    SECTION( "resizing bigger changes size and capacity" ) {
-        v.resize( 10 );
-
-        REQUIRE( v.size() == 10 );
-        REQUIRE( v.capacity() >= 10 );
-    }
-    SECTION( "resizing smaller changes size but not capacity" ) {
-        v.resize( 0 );
-
-        REQUIRE( v.size() == 0 );
-        REQUIRE( v.capacity() >= 5 );
-    }
-    SECTION( "reserving bigger changes capacity but not size" ) {
-        v.reserve( 10 );
-
-        REQUIRE( v.size() == 5 );
-        REQUIRE( v.capacity() >= 10 );
-    }
-    SECTION( "reserving smaller does not change size or capacity" ) {
-        v.reserve( 0 );
-
-        REQUIRE( v.size() == 6 );
-        REQUIRE( v.capacity() >= 5 );
-    }
-}
-
-#endif
