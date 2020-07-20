@@ -3,6 +3,15 @@
 #include <catch2/catch.hpp>
 #include "CardDefs.h"
 #include "CardPack.h"
+#include "Score.h"
+
+template<class T>
+std::string getObjStr(T obj)
+{
+    std::stringstream str;
+    str << obj;
+    return str.str();
+}
 
 TEST_CASE( "Card functions", "Cards" )
 {
@@ -13,9 +22,7 @@ TEST_CASE( "Card functions", "Cards" )
     REQUIRE(getCardValue(card) == CV_KING); // getCardValue()
     REQUIRE(getCardValueSymb(getCardValue(card)) == 'K'); // getCardValueSymb()
 
-    std::stringstream str;
-    str << card;
-    REQUIRE(str.str() == "K+");
+    REQUIRE(getObjStr(card) == "K+");
 }
 
 TEST_CASE( "Card comparison", "Cards" )
@@ -105,4 +112,42 @@ TEST_CASE( "Card Pack additions/removal", "Card Pack")
     REQUIRE(pack.getPackStr() == " 7^ 8^ 1^ J^ Q^ K^ A^");
     pack.removeCard(MAKE_CARD(CS_SPIDES, CV_KING));
     REQUIRE(pack.getPackStr() == " 7^ 8^ 1^ J^ Q^ A^");
+}
+
+TEST_CASE("Check main CScore operations", "Score")
+{
+    // Create and fill score object
+    CScore score;
+    score.setPlayerScore(0, 3);
+    score.setPlayerScore(1, 2);
+    score.setPlayerScore(2, 1);
+
+    // Check created values
+    REQUIRE(score.getPlayerScore(0) == 3);
+    REQUIRE(score.getPlayerScore(1) == 2);
+    REQUIRE(score.getPlayerScore(2) == 1);
+
+    // Check score printing
+    REQUIRE(getObjStr(score) == "(3, 2, 1)");
+
+    // Copy score object
+    CScore score2 = score;
+    REQUIRE(getObjStr(score) == getObjStr(score2));
+
+    // Check operator< for the same score
+    REQUIRE((score < score2) == false);
+    REQUIRE((score2 < score) == false);
+
+    // Inc player score
+    score.incPlayerScore(0);
+    REQUIRE(score.getPlayerScore(0) == 4);
+    REQUIRE(getObjStr(score) == "(4, 2, 1)");
+
+    // Check operator< for different scores (using lexicographical order)
+    REQUIRE((score < score2) == false);
+    REQUIRE((score2 < score) == true);
+
+    // Compare scores according to player strategy
+    REQUIRE(score2.isScoreHeigher(score, PS_P1MAX) == true);
+    REQUIRE(score2.isScoreHeigher(score, PS_P1MIN) == false);
 }
