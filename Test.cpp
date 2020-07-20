@@ -75,7 +75,7 @@ TEST_CASE( "Card Pack creation and basic operations", "Card Pack")
     REQUIRE(pack.hasCard(MAKE_CARD(CS_CLUBS, CV_7)) == false);
 }
 
-TEST_CASE( "Card Pack additions", "Card Pack")
+TEST_CASE( "Card Pack additions/removal", "Card Pack")
 {
     // Make 2 non-intersecting card packs
     const Card pack1Cards[] =
@@ -99,4 +99,10 @@ TEST_CASE( "Card Pack additions", "Card Pack")
     // Add card packs and check the result has all the cards, and it is sorted
     CCardPack pack = pack1 + pack2;
     REQUIRE(pack.getPackStr() == " 7^ 8^ 9^ 1^ J^ Q^ K^ A^");
+
+    // Remove cards
+    pack.removeCard(MAKE_CARD(CS_SPIDES, CV_9));
+    REQUIRE(pack.getPackStr() == " 7^ 8^ 1^ J^ Q^ K^ A^");
+    pack.removeCard(MAKE_CARD(CS_SPIDES, CV_KING));
+    REQUIRE(pack.getPackStr() == " 7^ 8^ 1^ J^ Q^ A^");
 }
