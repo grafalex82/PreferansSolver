@@ -194,7 +194,7 @@ inline std::ostream& operator<< (std::ostream & out, const Card& card)
  *
  * @return \a true if card is heigher than reference card.
  */
-inline bool isCardHeigher(Card card, Card ref, CardSuit trump)
+inline bool isCardHeigher(Card card, Card ref, CardSuit trump = CS_UNKNOWN)
 {
     if(trump != CS_UNKNOWN)
     {
