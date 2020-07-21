@@ -211,6 +211,11 @@ public:
      */
     inline bool hasSuit(CardSuit suit) const
     {
+        // We do not have cards with unknown suits, for sure
+        if(suit == CS_UNKNOWN)
+            return false;
+
+        // Just search for the requested suit
         for(unsigned int i=0; i<m_iCardsCount; i++)
         {
             if(getSuit(m_aCards[i]) == suit)

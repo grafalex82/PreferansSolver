@@ -4,6 +4,7 @@
 #include "CardDefs.h"
 #include "CardPack.h"
 #include "Score.h"
+#include "Player.h"
 
 template<class T>
 std::string getObjStr(T obj)
@@ -84,6 +85,7 @@ TEST_CASE( "Card Pack creation and basic operations", "Card Pack")
     // Check hasSuit()
     REQUIRE(pack.hasSuit(CS_SPIDES) == true);
     REQUIRE(pack.hasSuit(CS_CLUBS) == false);
+    REQUIRE(pack.hasSuit(CS_UNKNOWN) == false);
 }
 
 TEST_CASE( "Card Pack additions/removal", "Card Pack")
@@ -233,4 +235,37 @@ TEST_CASE("CScore player strategies", "Score")
     REQUIRE(score1.isScoreHeigher(score2, PS_P2MIN) == false);
     REQUIRE(score1.isScoreHeigher(score2, PS_P3MAX) == true);
     REQUIRE(score1.isScoreHeigher(score2, PS_P3MIN) == false);
+}
+
+TEST_CASE("Player's valid turns", "Player")
+{
+    const Card prefCards[] =
+    {
+        MAKE_CARD(CS_SPIDES, CV_7),
+        MAKE_CARD(CS_SPIDES, CV_8),
+        MAKE_CARD(CS_CLUBS, CV_9),
+        MAKE_CARD(CS_CLUBS, CV_10),
+        MAKE_CARD(CS_DIAMONDS, CV_JACK),
+        MAKE_CARD(CS_DIAMONDS, CV_QUEEN)
+    };
+    CCardPack pack(prefCards, sizeof(prefCards) / sizeof(Card));
+    CPlayer player(pack, PS_P1MAX);
+
+    SECTION("Play spides")
+    {
+        CCardPack pack2 = player.getListOfValidTurns(CS_SPIDES, CS_DIAMONDS);
+        REQUIRE(pack2.getPackStr() == " 7^ 8^");
+    }
+
+    SECTION("Play hearts (but we do not have ones)")
+    {
+        CCardPack pack2 = player.getListOfValidTurns(CS_HEARTS, CS_DIAMONDS);
+        REQUIRE(pack2.getPackStr() == " J$ Q$");
+    }
+
+    SECTION("Play hearts (but we have neither hearts, nor trumps)")
+    {
+        CCardPack pack2 = player.getListOfValidTurns(CS_HEARTS, CS_UNKNOWN);
+        REQUIRE(pack2.getPackStr() == " 7^ 8^ 9+ 1+ J$ Q$");
+    }
 }

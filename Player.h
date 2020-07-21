@@ -120,6 +120,30 @@ public:
     Card getOptimalTurn(CGame * pGame, CScore & score, bool bFirstHand);
 
     /**
+     * @brief Return a list of valid turns for a particular game situation
+     *
+     * This method is intended for calculating a list of valid turns for a particular
+     * game situation, taking into account current suit (if defined), and trump (if specified)
+     *
+     * Method will filter player's card pack according to the following criteria:
+     * - If trick suit is specified - result will include same suit only
+     * - If trick suit is specified, but the player does not have this suit - the algorithm
+     *   will return trumps
+     * - If there is are cards of the needed suit, and there are no trumps, resulting list
+     *   will include all the other cards
+     *   .
+     *
+     * @param suit  - the suit of the current trick. It can be \a CS_UNKNOWN if the suit is
+     *                not defined yet (e.g. the player is on the first hand)
+     * @param trump - the trump suit of the current game
+     *
+     * @todo the algorithm may apply removing equivalent cards here
+     *
+     * @return filtered card pack that has only valid turns
+     */
+    CCardPack getListOfValidTurns(CardSuit suit, CardSuit trump = CS_UNKNOWN);
+
+    /**
      * @brief Remove card from player's cards
      *
      * This method is intended for removing the specified card from card pack handled by player.
