@@ -80,6 +80,10 @@ TEST_CASE( "Card Pack creation and basic operations", "Card Pack")
     // Check hasCard()
     REQUIRE(pack.hasCard(MAKE_CARD(CS_SPIDES, CV_7)) == true);
     REQUIRE(pack.hasCard(MAKE_CARD(CS_CLUBS, CV_7)) == false);
+
+    // Check hasSuit()
+    REQUIRE(pack.hasSuit(CS_SPIDES) == true);
+    REQUIRE(pack.hasSuit(CS_CLUBS) == false);
 }
 
 TEST_CASE( "Card Pack additions/removal", "Card Pack")
