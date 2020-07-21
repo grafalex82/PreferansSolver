@@ -200,24 +200,27 @@ inline bool isCardHeigher(Card card, Card ref, CardSuit trump = CS_UNKNOWN)
     {
         if(getSuit(card) == trump)
 	    {
+            // Both cards are trumps
             if(getSuit(ref) == trump)
 		        return (getCardValue(card) > getCardValue(ref));
 	        
+            // Our card is a trump, but reference is not
             return true;
 	    }
 	    else
 	    {
+            // Our card is not a trump, while reference is
 	        if(getSuit(ref) == trump)
 		        return false;
 	    }
     }
 
+    // Both cards are not trumps, we can compare them only if they have the same suit
     if(getSuit(card) == getSuit(ref))
 	    return (getCardValue(card) > getCardValue(ref));
     
     return false;
 }
-
 
 #endif //CARD_DEFS_H
 
