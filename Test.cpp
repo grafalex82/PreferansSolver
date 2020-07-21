@@ -118,6 +118,43 @@ TEST_CASE( "Card Pack additions/removal", "Card Pack")
     REQUIRE(pack.getPackStr() == " 7^ 8^ 1^ J^ Q^ A^");
 }
 
+TEST_CASE( "Card Pack - filtering", "Card Pack")
+{
+    const Card prefCards[] =
+    {
+        MAKE_CARD(CS_SPIDES, CV_7),
+        MAKE_CARD(CS_SPIDES, CV_8),
+        MAKE_CARD(CS_CLUBS, CV_9),
+        MAKE_CARD(CS_CLUBS, CV_10),
+        MAKE_CARD(CS_DIAMONDS, CV_JACK),
+        MAKE_CARD(CS_DIAMONDS, CV_QUEEN),
+        MAKE_CARD(CS_HEARTS, CV_KING),
+        MAKE_CARD(CS_HEARTS, CV_ACE)
+    };
+
+    // Check card pack creation
+    CCardPack pack(prefCards, sizeof(prefCards) / sizeof(Card));
+
+    SECTION("Only clubs remain")
+    {
+        pack.filterOutAllButSuit(CS_CLUBS);
+        REQUIRE(pack.getPackStr() == " 9+ 1+");
+    }
+
+    SECTION("Only spides remain")
+    {
+        pack.filterOutAllButSuit(CS_SPIDES);
+        REQUIRE(pack.getPackStr() == " 7^ 8^");
+    }
+
+    SECTION("Nothing to filter out")
+    {
+        pack.filterOutAllButSuit(CS_UNKNOWN);
+        REQUIRE(pack.getPackStr() == " 7^ 8^ 9+ 1+ J$ Q$ K@ A@");
+    }
+}
+
+
 TEST_CASE( "Card Pack - card equivalence", "Card Pack")
 {
     const Card prefCards[] =

@@ -148,3 +148,22 @@ CCardPack CCardPack::operator +(const CCardPack &rPack)
     return CCardPack(temp, idx);
 }
 
+void CCardPack::filterOutAllButSuit(CardSuit suit)
+{
+    // If no suit specified - nothing to filter out
+    if(suit == CS_UNKNOWN)
+        return;
+
+    // Filter out unnecessary cards, copy remaining cards in place
+    unsigned int j = 0;
+    for(unsigned int i=0; i<m_iCardsCount; i++)
+    {
+        if(getSuit(m_aCards[i]) == suit)
+        {
+            m_aCards[j] = m_aCards[i];
+            j++;
+        }
+    }
+
+    m_iCardsCount = j;
+}

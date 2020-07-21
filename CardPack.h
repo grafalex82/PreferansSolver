@@ -201,6 +201,40 @@ public:
         }
         return false;
     }
+
+    /**
+     * @brief Check whether the card pack has any cards of specified card suit
+     *
+     * @param suit   - suit to search
+     *
+     * @return \a true if there are cards of specified suit, \a false otherwise
+     */
+    inline bool hasSuit(CardSuit suit) const
+    {
+        for(unsigned int i=0; i<m_iCardsCount; i++)
+        {
+            if(getSuit(m_aCards[i]) == suit)
+                return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * @brief compare two cards and check their equivalence
+     *
+     * This method allows to compare two cards in terms of equivalence. Equivalent cards are cards of the same suit
+     * and there is no other card, that heigher than left card and less than right. In terms of sorted cards array
+     * This cards will be located in two neighbor cells.
+     *
+     * It is assumed, that cards array is sorted and specified left card is less than right.
+     *
+     * @param left  - left compared card
+     * @param right - right compared card
+     *
+     * @return \a true if cards are equivalent, \a false otherwise
+     */
+    bool areCardsEquivalent(Card left, Card right) const;
 //@}
 
 ///@name Operations
@@ -226,20 +260,14 @@ public:
     void removeCard(Card card);
 
     /**
-     * @brief compare two cards and check their equivalence
+     * @brief Remove all cards that do not belong to a given suit
      *
-     * This method allows to compare two cards in terms of equivalence. Equivalent cards are cards of the same suit
-     * and there is no other card, that heigher than left card and less than right. In terms of sorted cards array
-     * This cards will be located in two neighbor cells.
+     * This method is intended for removing extra suits, so that card pack consists of card only
+     * of a given suit
      *
-     * It is assumed, that cards array is sorted and specified left card is less than right.
-     *
-     * @param left  - left compared card
-     * @param right - right compared card
-     *
-     * @return \a true if cards are equivalent, \a false otherwise
-     */    
-    bool areCardsEquivalent(Card left, Card right) const;
+     * @param suit - the suit that must remain
+     */
+    void filterOutAllButSuit(CardSuit suit);
 //@}
 
 protected:
