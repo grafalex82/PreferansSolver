@@ -13,8 +13,8 @@ SET(SOURCE_FILES
 	CardDefs.h
 	CardPack.cpp
 	CardPack.h
-	Game.cpp
-	Game.h
+        GameState.cpp
+        GameState.h
 	Player.cpp
 	Player.h
 	Score.cpp

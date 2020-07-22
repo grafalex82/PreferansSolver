@@ -1,5 +1,5 @@
-#ifndef _GAME_H_
-#define _GAME_H_
+#ifndef GAME_STATE_H
+#define GAME_STATE_H
 
 /**
  * @file
@@ -18,7 +18,7 @@
  *
  * This class represents the game state and responsible for tricks counting, active player regulation, etc.
  */
-class CGame
+class CGameState
 {
 public:
     /**
@@ -39,7 +39,7 @@ public:
      * @param p2 - player 2 data
      * @param p3 - player 3 data
      */
-    CGame(const CPlayer & p1, const CPlayer & p2, const CPlayer & p3);
+    CGameState(const CPlayer & p1, const CPlayer & p2, const CPlayer & p3);
     
     /**
      * @brief The game copy constructor
@@ -48,20 +48,20 @@ public:
      *
      * @param rGame - game to copy
      */
-    CGame(const CGame & rGame);
+    CGameState(const CGameState & rGame);
     
     /**
      * @brief The game destructor
      *
      * This destructor will release internal data, such as allocated player objects
      */
-    ~CGame();
+    ~CGameState();
 
 ///@name Operators
 //@{
 public:
     /// Serialize operator
-    friend std::ostream& operator<<(std::ostream& out, const CGame & game);
+    friend std::ostream& operator<<(std::ostream& out, const CGameState & game);
 
     /**
      * @brief Less-than operator
@@ -75,11 +75,11 @@ public:
      *
      * @return \a true if this game state less than specified, otherwise \a false
      */
-    bool operator<(const CGame & rGame) const;
+    bool operator<(const CGameState & rGame) const;
 
 private:    
     /// The blocked assignment operator
-    CGame& operator=(const CGame & rGame);
+    CGameState& operator=(const CGameState & rGame);
 //@}
 
 ///@name Attributes operations
@@ -111,7 +111,7 @@ public:
     inline void setActivePlayer(unsigned int p)
     {
         if(p >= MAX_PLAYERS)
-            throw "CGame::setActivePlayer(): player index is out of bounds";
+            throw "CGameState::setActivePlayer(): player index is out of bounds";
             
         m_iActivePlayer = p;
     }
@@ -189,7 +189,7 @@ public:
      * As result the score will be returned - it indicates final score, if all players will play with optimal strategy.
      * 
      * Algorithm description:
-     * - Play the specified card (using the CGame::makeTurn() method). Game state will be changed:
+     * - Play the specified card (using the CGameState::makeTurn() method). Game state will be changed:
      *   - new active player
      *   - trick handled
      *   - score updated
@@ -257,4 +257,4 @@ protected:
     CCardPack m_cardsLeft;
 };
 
-#endif //_GAME_H_
+#endif //GAME_STATE_H

@@ -12,7 +12,7 @@
 #include "Score.h"
 
 //Forward declaration
-class CGame;
+class CGameState;
 
 /**
  * @brief The player class
@@ -117,7 +117,7 @@ public:
      *
      * @return The optimal card.
      */
-    Card getOptimalTurn(CGame * pGame, CScore & score, bool bFirstHand);
+    Card getOptimalTurn(CGameState * pGame, CScore & score, bool bFirstHand);
 
     /**
      * @brief Return a list of valid turns for a particular game situation

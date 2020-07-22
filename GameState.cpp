@@ -1,8 +1,8 @@
-#include "Game.h"
+#include "GameState.h"
 
 #include <map>
 
-typedef std::map<CGame, CScore> MapGameToScore;
+typedef std::map<CGameState, CScore> MapGameToScore;
 typedef MapGameToScore::const_iterator MapGameToScoreCIt;
 typedef MapGameToScore::value_type MapGameToScoreVt;
 
@@ -10,7 +10,7 @@ static MapGameToScore gVisitedStates;
 unsigned int giHits;
 unsigned int giTotal;
 
-CGame::CGame(const CPlayer & p1, const CPlayer & p2, const CPlayer & p3) :
+CGameState::CGameState(const CPlayer & p1, const CPlayer & p2, const CPlayer & p3) :
     m_score(),
     m_cardsLeft(p1.getCards() + p2.getCards() + p3.getCards())
 {
@@ -25,7 +25,7 @@ CGame::CGame(const CPlayer & p1, const CPlayer & p2, const CPlayer & p3) :
     m_iCardsOnTableCount = 0;    
 }
 
-CGame::CGame(const CGame & rGame) :
+CGameState::CGameState(const CGameState & rGame) :
     m_score(rGame.m_score),
     m_cardsLeft(rGame.m_cardsLeft)
 {
@@ -41,14 +41,14 @@ CGame::CGame(const CGame & rGame) :
     memcpy(m_aCardsOnTable, rGame.m_aCardsOnTable, 3*sizeof(Card));
 }
 
-CGame::~CGame()
+CGameState::~CGameState()
 {
     delete m_aPlayers[0];
     delete m_aPlayers[1];
     delete m_aPlayers[2];
 }
 
-bool CGame::operator<(const CGame & rGame) const
+bool CGameState::operator<(const CGameState & rGame) const
 {
     if(m_iCardsOnTableCount < rGame.m_iCardsOnTableCount)
         return true;
@@ -99,7 +99,7 @@ bool CGame::operator<(const CGame & rGame) const
     return false;
 }
 
-std::ostream& operator<< (std::ostream& out, const CGame & game)
+std::ostream& operator<< (std::ostream& out, const CGameState & game)
 {
     out << std::endl;
     out << "0: " << *game.m_aPlayers[0] << std::endl;
@@ -110,12 +110,12 @@ std::ostream& operator<< (std::ostream& out, const CGame & game)
     return out;
 }
 
-Card CGame::getOptimalTurn(CScore & score)
+Card CGameState::getOptimalTurn(CScore & score)
 {
     return m_aPlayers[m_iActivePlayer]->getOptimalTurn(this, score, (m_iCardsOnTableCount == 0));
 }
 
-CScore CGame::guessTurn(Card card)
+CScore CGameState::guessTurn(Card card)
 {
     makeTurn(card);
 
@@ -140,7 +140,7 @@ CScore CGame::guessTurn(Card card)
     return ret;
 }
 
-void CGame::makeTurn(Card card)
+void CGameState::makeTurn(Card card)
 {
     m_aPlayers[m_iActivePlayer]->removeCard(card);
     m_aCardsOnTable[m_iCardsOnTableCount++] = card;

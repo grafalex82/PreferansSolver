@@ -1,5 +1,5 @@
 #include "Player.h"
-#include "Game.h"
+#include "GameState.h"
 
 #include <string>
 #include <vector>
@@ -48,7 +48,7 @@ std::ostream& operator<< (std::ostream& out, const CPlayer & player)
     return out;
 }
 
-Card CPlayer::getOptimalTurn(CGame * pGame, CScore & retScore, bool bFirstHand)
+Card CPlayer::getOptimalTurn(CGameState * pGame, CScore & retScore, bool bFirstHand)
 {
     //Print the percent
     gCounter++;
@@ -176,7 +176,7 @@ Card CPlayer::getOptimalTurn(CGame * pGame, CScore & retScore, bool bFirstHand)
 	    
         progressByLevel[indent - 1] = i;
 	    
-        CGame game(*pGame);
+        CGameState game(*pGame);
         CScore score = game.guessTurn(availCards[i]);
         vScores.push_back(score);
         if(i == 0)
