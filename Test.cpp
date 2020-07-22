@@ -137,23 +137,14 @@ TEST_CASE( "Card Pack - filtering", "Card Pack")
     // Check card pack creation
     CCardPack pack(prefCards, sizeof(prefCards) / sizeof(Card));
 
-    SECTION("Only clubs remain")
-    {
-        pack.filterOutAllButSuit(CS_CLUBS);
-        REQUIRE(pack.getPackStr() == " 9+ 1+");
-    }
+    // Only clubs remain
+    REQUIRE(pack.getSubset(CS_CLUBS).getPackStr() == " 9+ 1+");
 
-    SECTION("Only spides remain")
-    {
-        pack.filterOutAllButSuit(CS_SPIDES);
-        REQUIRE(pack.getPackStr() == " 7^ 8^");
-    }
+    // Only spides remain
+    REQUIRE(pack.getSubset(CS_SPIDES).getPackStr() == " 7^ 8^");
 
-    SECTION("Nothing to filter out")
-    {
-        pack.filterOutAllButSuit(CS_UNKNOWN);
-        REQUIRE(pack.getPackStr() == " 7^ 8^ 9+ 1+ J$ Q$ K@ A@");
-    }
+    // Unknown suit leads to an empty subset
+    REQUIRE(pack.getSubset(CS_UNKNOWN).getPackStr() == "");
 }
 
 

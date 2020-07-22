@@ -211,23 +211,15 @@ Card CPlayer::getOptimalTurn(CGame * pGame, CScore & retScore, bool bFirstHand)
 
 CCardPack CPlayer::getListOfValidTurns(CardSuit suit, CardSuit trump)
 {
-    CCardPack res = m_cardPack;
-
     // Search for requested suit first
-    if(res.hasSuit(suit))
-    {
-        res.filterOutAllButSuit(suit);
-        return res;
-    }
+    if(m_cardPack.hasSuit(suit))
+        return m_cardPack.getSubset(suit);
 
     // Then search for trumps
-    if(res.hasSuit(trump))
-    {
-        res.filterOutAllButSuit(trump);
-        return res;
-    }
+    if(m_cardPack.hasSuit(trump))
+        return m_cardPack.getSubset(trump);
 
     // Otherwise all the remaining cards are valid
-    return res;
+    return m_cardPack;
 }
 

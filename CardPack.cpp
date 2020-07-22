@@ -2,6 +2,11 @@
 
 #include <stdlib.h>
 
+CCardPack::CCardPack()
+{
+    m_iCardsCount = 0;
+}
+
 CCardPack::CCardPack(const Card * pCards, unsigned int iCount)
 {
     memcpy(m_aCards, pCards, iCount * sizeof(Card));
@@ -148,22 +153,25 @@ CCardPack CCardPack::operator +(const CCardPack &rPack)
     return CCardPack(temp, idx);
 }
 
-void CCardPack::filterOutAllButSuit(CardSuit suit)
+CCardPack CCardPack::getSubset(CardSuit suit) const
 {
-    // If no suit specified - nothing to filter out
-    if(suit == CS_UNKNOWN)
-        return;
+    CCardPack ret;
 
-    // Filter out unnecessary cards, copy remaining cards in place
+    // If no suit specified - nothing to return
+    if(suit == CS_UNKNOWN)
+        return ret;
+
+    // Copy cards that match given suit
     unsigned int j = 0;
     for(unsigned int i=0; i<m_iCardsCount; i++)
     {
         if(getSuit(m_aCards[i]) == suit)
         {
-            m_aCards[j] = m_aCards[i];
+            ret.m_aCards[j] = m_aCards[i];
             j++;
         }
     }
 
-    m_iCardsCount = j;
+    ret.m_iCardsCount = j;
+    return ret;
 }

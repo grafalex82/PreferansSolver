@@ -34,7 +34,16 @@ const unsigned int MAX_CARDS = 4*8;
 class CCardPack
 {
 
-public:
+private:
+    /**
+     * @brief Emptu Cards Pack constructor
+     *
+     * This constructor will create an empty cards pack
+     */
+    CCardPack();
+
+
+public:    
     /**
      * @brief Cards Pack constructor
      *
@@ -265,14 +274,13 @@ public:
     void removeCard(Card card);
 
     /**
-     * @brief Remove all cards that do not belong to a given suit
+     * @brief return a subset of cards that match the given suit
      *
-     * This method is intended for removing extra suits, so that card pack consists of card only
-     * of a given suit
+     * This method is widely used when calculating a list of valid player turns
      *
-     * @param suit - the suit that must remain
+     * @param suit - the suit to include into a resulting subset
      */
-    void filterOutAllButSuit(CardSuit suit);
+    CCardPack getSubset(CardSuit suit) const;
 //@}
 
 protected:
