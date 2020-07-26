@@ -10,19 +10,27 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 
 SET(SOURCE_FILES
-        CardDefs.h
-        CardPack.cpp
-        CardPack.h
-        GameState.cpp
-        GameState.h
-        Player.cpp
-        Player.h
-        Score.cpp
-        Score.h
-
-        Test.cpp
-        TestRunner.cpp
+    CardDefs.h
+    CardPack.cpp
+    CardPack.h
+    GameState.cpp
+    GameState.h
+    Player.cpp
+    Player.h
+    Score.cpp
+    Score.h
 )
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+SET(UNIT_TEST_SOURCES
+    Test.cpp
+    TestRunner.cpp
+)
+
+SET(MAIN_APP_SOURCES
+    Main.cpp
+)
+
+
+add_executable(${PROJECT_NAME}_Test ${SOURCE_FILES} ${UNIT_TEST_SOURCES})
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${MAIN_APP_SOURCES})
 

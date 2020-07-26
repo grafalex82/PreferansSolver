@@ -1,6 +1,7 @@
 #include "GameState.h"
 
 #include <map>
+#include <sstream>
 
 typedef std::map<CGameState, CScore> MapGameToScore;
 typedef MapGameToScore::const_iterator MapGameToScoreCIt;
@@ -9,6 +10,10 @@ typedef MapGameToScore::value_type MapGameToScoreVt;
 static MapGameToScore gVisitedStates;
 unsigned int giHits;
 unsigned int giTotal;
+
+std::string currentPath;
+
+unsigned int iLeafsCount = 0;
 
 CGameState::CGameState(const CPlayer & p1, const CPlayer & p2, const CPlayer & p3) :
     m_score(),
@@ -142,15 +147,16 @@ CScore CGameState::guessTurn(Card card)
 
 void CGameState::makeTurn(Card card)
 {
+    // Update players and table information
     m_aPlayers[m_iActivePlayer]->removeCard(card);
     m_aCardsOnTable[m_iCardsOnTableCount++] = card;
     m_iActivePlayer = (++m_iActivePlayer) % MAX_PLAYERS;
     
+    // First card on the table defines current trick suit
     if(m_iCardsOnTableCount == 1)
-    {
         m_currentSuit = getSuit(card);
-    }
-    else
+
+    // 3rd card on the table completes the trick
     if(m_iCardsOnTableCount == 3)
     {
         //Calculate the winner
@@ -173,3 +179,38 @@ void CGameState::makeTurn(Card card)
     }
 }
 
+void CGameState::playGameRecursive()
+{
+//    std::cout << "Current state: " << *this << std::endl;
+
+    CCardPack possibleTurns = m_aPlayers[m_iActivePlayer]->getListOfValidTurns(m_currentSuit, m_trumpSuit);
+
+    // end of recursion, if no turns can be done
+    if(possibleTurns.getCardsCount() == 0)
+    {
+        iLeafsCount++;
+        if(iLeafsCount % 100000 == 0)
+            std::cout << "\rReached end of the path " << iLeafsCount << ": " << currentPath << std::endl;
+        return;
+    }
+
+    for(unsigned int i=0; i<possibleTurns.getCardsCount(); i++)
+    {
+        Card card = possibleTurns.getCard(i);
+
+//        std::cout << "Current Path: " << currentPath << std::endl;
+//        std::cout << "Player " << m_iActivePlayer << " plays " << card << std::endl;
+
+        std::string currentPathBackup = currentPath;
+        std::stringstream str;
+        str << card;
+        currentPath += str.str();
+
+        // Make a copy of current state, and play the turn recursively
+        CGameState newState(*this);
+        newState.makeTurn(card);
+        newState.playGameRecursive();
+
+        currentPath = currentPathBackup;
+    }
+}

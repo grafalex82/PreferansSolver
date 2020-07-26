@@ -234,6 +234,9 @@ public:
      * @param card - card to play
      */
     void makeTurn(Card card);
+
+
+    void playGameRecursive();
 //@}
     
 protected:
