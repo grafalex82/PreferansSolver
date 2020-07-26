@@ -10,17 +10,17 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 
 SET(SOURCE_FILES
-	CardDefs.h
-	CardPack.cpp
-	CardPack.h
+        CardDefs.h
+        CardPack.cpp
+        CardPack.h
         GameState.cpp
         GameState.h
-	Player.cpp
-	Player.h
-	Score.cpp
-	Score.h
+        Player.cpp
+        Player.h
+        Score.cpp
+        Score.h
 
-	Test.cpp
+        Test.cpp
         TestRunner.cpp
 )
 
