@@ -154,11 +154,10 @@ void CGameState::makeTurn(Card card)
     if(m_iCardsOnTableCount == 3)
     {
         //Calculate the winner
-        unsigned int iWinner = 0;
-        if(isCardHeigher(m_aCardsOnTable[1], m_aCardsOnTable[0], m_trumpSuit))
-            iWinner = 1;
-        if(isCardHeigher(m_aCardsOnTable[2], m_aCardsOnTable[iWinner], m_trumpSuit))
-            iWinner = 2;
+        unsigned int iWinner = calcTrickWinner(m_aCardsOnTable[0],
+                                               m_aCardsOnTable[1],
+                                               m_aCardsOnTable[2],
+                                               m_trumpSuit);
 
         // Increase the winner's score
         iWinner = (m_iActivePlayer + iWinner) % MAX_PLAYERS;
