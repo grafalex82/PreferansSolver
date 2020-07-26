@@ -43,6 +43,48 @@ TEST_CASE( "Card comparison", "Cards" )
     // Compare different cards when trump is defined
     REQUIRE(isCardHeigher(MAKE_CARD(CS_CLUBS, CV_KING), MAKE_CARD(CS_HEARTS, CV_JACK), CS_HEARTS) == false);
     REQUIRE(isCardHeigher(MAKE_CARD(CS_CLUBS, CV_JACK), MAKE_CARD(CS_HEARTS, CV_KING), CS_CLUBS) == true);
+
+    // Calculate tricks - all play same suit
+    REQUIRE(calcTrickWinner(MAKE_CARD(CS_CLUBS, CV_JACK),
+                            MAKE_CARD(CS_CLUBS, CV_KING),
+                            MAKE_CARD(CS_CLUBS, CV_8),
+                            CS_UNKNOWN) == 1);
+    REQUIRE(calcTrickWinner(MAKE_CARD(CS_CLUBS, CV_8),
+                            MAKE_CARD(CS_CLUBS, CV_QUEEN),
+                            MAKE_CARD(CS_CLUBS, CV_ACE),
+                            CS_UNKNOWN) == 2);
+    REQUIRE(calcTrickWinner(MAKE_CARD(CS_CLUBS, CV_10),
+                            MAKE_CARD(CS_CLUBS, CV_9),
+                            MAKE_CARD(CS_CLUBS, CV_8),
+                            CS_UNKNOWN) == 0);
+
+    // Calculate tricks - all play different suits
+    REQUIRE(calcTrickWinner(MAKE_CARD(CS_SPIDES, CV_JACK),
+                            MAKE_CARD(CS_CLUBS, CV_KING),
+                            MAKE_CARD(CS_HEARTS, CV_8),
+                            CS_UNKNOWN) == 0);
+    REQUIRE(calcTrickWinner(MAKE_CARD(CS_HEARTS, CV_JACK),
+                            MAKE_CARD(CS_DIAMONDS, CV_KING),
+                            MAKE_CARD(CS_SPIDES, CV_8),
+                            CS_UNKNOWN) == 0);
+    REQUIRE(calcTrickWinner(MAKE_CARD(CS_HEARTS, CV_JACK),
+                            MAKE_CARD(CS_DIAMONDS, CV_KING),
+                            MAKE_CARD(CS_SPIDES, CV_8),
+                            CS_CLUBS) == 0);
+
+    // Calculate tricks - someone plays tump
+    REQUIRE(calcTrickWinner(MAKE_CARD(CS_SPIDES, CV_JACK),
+                            MAKE_CARD(CS_CLUBS, CV_KING),
+                            MAKE_CARD(CS_HEARTS, CV_8),
+                            CS_HEARTS) == 2);
+    REQUIRE(calcTrickWinner(MAKE_CARD(CS_SPIDES, CV_JACK),
+                            MAKE_CARD(CS_CLUBS, CV_KING),
+                            MAKE_CARD(CS_HEARTS, CV_8),
+                            CS_SPIDES) == 0);
+    REQUIRE(calcTrickWinner(MAKE_CARD(CS_SPIDES, CV_JACK),
+                            MAKE_CARD(CS_CLUBS, CV_KING),
+                            MAKE_CARD(CS_HEARTS, CV_8),
+                            CS_CLUBS) == 1);
 }
 
 TEST_CASE( "Card Pack creation and basic operations", "Card Pack")

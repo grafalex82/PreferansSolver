@@ -222,5 +222,42 @@ inline bool isCardHeigher(Card card, Card ref, CardSuit trump = CS_UNKNOWN)
     return false;
 }
 
+/**
+ * @brief Calculate the trick winner
+ *
+ * This function accepts 3 cards on the table and calculates the winner, taking into
+ * account trump if specified. It is expected that all 3 cards were placed according
+ * to Preferans rules.
+ *
+ * It is expected that card1 was put first, and all other cards are compared to the 1st card.
+ * For example, card1 is 7 spides, but other players have neigher spides, no trumps, then
+ * 1st player wins.
+ *
+ * @param card1 - card played by 1st player
+ * @param card2 - card played by 2nd player
+ * @param card3 - card played by 3rd player
+ * @param trump - the trump suit, or CS_UNKNOWN if no trump suit defined
+ *
+ * @return zero based number of player that wins this trick
+ */
+inline unsigned int calcTrickWinner(Card card1, Card card2, Card card3, CardSuit trump = CS_UNKNOWN)
+{
+    unsigned int iWinner = 0;
+    Card highestCard = card1;
+
+    // Compare card1 and card2
+    if(isCardHeigher(card2, card1, trump))
+    {
+        iWinner = 1;
+        highestCard = card2;
+    }
+
+    // And then compare them with card3
+    if(isCardHeigher(card3, highestCard, trump))
+        iWinner = 2;
+
+    return iWinner;
+}
+
 #endif //CARD_DEFS_H
 
