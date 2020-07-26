@@ -3,7 +3,7 @@
 
 /**
  * @file
- * @brief The game declaration
+ * @brief The game state declaration
  */
 
 #include <vector>
@@ -14,15 +14,16 @@
 #include "CardPack.h"
 
 /**
- * @brief The Game
+ * @brief The Game State
  *
- * This class represents the game state and responsible for tricks counting, active player regulation, etc.
+ * This class represents the game state. This is a data holder class that contains information
+ * about player's and their cards, current score, etc.
  */
 class CGameState
 {
 public:
     /**
-     * @brief Create new game
+     * @brief Create new game state
      *
      * This constructr allows to create new game with specified players.
      *
