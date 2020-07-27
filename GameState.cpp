@@ -15,9 +15,10 @@ std::string currentPath;
 
 unsigned int iLeafsCount = 0;
 
-CGameState::CGameState(const CPlayer & p1, const CPlayer & p2, const CPlayer & p3) :
-    m_score(),
-    m_cardsLeft(p1.getCards() + p2.getCards() + p3.getCards())
+CGameState::CGameState(const CPlayer & p1, const CPlayer & p2, const CPlayer & p3)
+    : m_score()
+    , m_pCardsLeft(nullptr)
+    , m_bOwnsCardsLeft(false)
 {
     m_aPlayers[0] = new CPlayer(p1);
     m_aPlayers[1] = new CPlayer(p2);
@@ -30,9 +31,11 @@ CGameState::CGameState(const CPlayer & p1, const CPlayer & p2, const CPlayer & p
     m_iCardsOnTableCount = 0;    
 }
 
-CGameState::CGameState(const CGameState & rGame) :
-    m_score(rGame.m_score),
-    m_cardsLeft(rGame.m_cardsLeft)
+CGameState::CGameState(const CGameState & rGame)
+    : m_score(rGame.m_score)
+    // The copy will have the same reference to cards left pack, but it will not own it
+    , m_pCardsLeft(rGame.m_pCardsLeft)
+    , m_bOwnsCardsLeft(false)
 {
     m_aPlayers[0] = new CPlayer(*rGame.m_aPlayers[0]);
     m_aPlayers[1] = new CPlayer(*rGame.m_aPlayers[1]);
@@ -51,6 +54,18 @@ CGameState::~CGameState()
     delete m_aPlayers[0];
     delete m_aPlayers[1];
     delete m_aPlayers[2];
+
+    releaseCardsLeft();
+}
+
+void CGameState::releaseCardsLeft()
+{
+    if(!m_bOwnsCardsLeft)
+        return;
+
+    delete m_pCardsLeft;
+    m_pCardsLeft = nullptr;
+    m_bOwnsCardsLeft = false;
 }
 
 bool CGameState::operator<(const CGameState & rGame) const
@@ -68,11 +83,6 @@ bool CGameState::operator<(const CGameState & rGame) const
             return false;
     }
     
-    if(m_cardsLeft < rGame.m_cardsLeft)
-        return true;
-    if(rGame.m_cardsLeft < m_cardsLeft)
-        return false;
-
     for(unsigned int i=0; i<MAX_PLAYERS; i++)
     {
         if(*(m_aPlayers[i]) < *(rGame.m_aPlayers[i]))
@@ -178,7 +188,7 @@ void CGameState::makeTurn(Card card)
 
         // Prepare for new trick
         for(unsigned int i=0; i<3; i++)
-            m_cardsLeft.removeCard(m_aCardsOnTable[i]);
+            m_pCardsLeft->removeCard(m_aCardsOnTable[i]);
 	    
         m_iCardsOnTableCount = 0;
         m_currentSuit = CS_UNKNOWN;

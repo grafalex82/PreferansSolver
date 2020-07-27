@@ -236,6 +236,15 @@ public:
 //@}
     
 protected:
+    /**
+     * @brief Release cards left object
+     *
+     * This is a helper method to release cards left object (if owned) and
+     * reset the pointer to a default state
+     */
+    void releaseCardsLeft();
+
+protected:
     /// List of players in game
     CPlayer * m_aPlayers[MAX_PLAYERS];
     /// Player, that will do next turn
@@ -254,7 +263,10 @@ protected:
     CScore m_score;
 
     /// List of cards currently present in game
-    CCardPack m_cardsLeft;
+    CCardPack * m_pCardsLeft;
+    /// Flag indicates that this current object owns m_pCardsLeft
+    /// (otherwise it is just a reference to other's state card pack)
+    bool m_bOwnsCardsLeft;
 };
 
 #endif //GAME_STATE_H
