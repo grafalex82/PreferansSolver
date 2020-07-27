@@ -5,6 +5,7 @@
 #include "CardPack.h"
 #include "Score.h"
 #include "Player.h"
+#include "GameState.h"
 
 template<class T>
 std::string getObjStr(T obj)
@@ -300,5 +301,46 @@ TEST_CASE("Player's valid turns", "Player")
     {
         CCardPack pack2 = player.getListOfValidTurns(CS_HEARTS, CS_UNKNOWN);
         REQUIRE(pack2.getPackStr() == " 7^ 8^ 9+ 1+ J$ Q$");
+    }
+}
+
+TEST_CASE("Game State ", "Game State")
+{
+    // Create 3 players
+    const Card player1Cards[] =
+    {
+        MAKE_CARD(CS_SPIDES, CV_7),
+        MAKE_CARD(CS_CLUBS, CV_9),
+        MAKE_CARD(CS_DIAMONDS, CV_QUEEN)
+    };
+    CCardPack pack1(player1Cards, sizeof(player1Cards) / sizeof(Card));
+    CPlayer player1(pack1, PS_P2MIN);
+
+    const Card player2Cards[] =
+    {
+        MAKE_CARD(CS_SPIDES, CV_9),
+        MAKE_CARD(CS_CLUBS, CV_7),
+        MAKE_CARD(CS_DIAMONDS, CV_KING)
+    };
+    CCardPack pack2(player2Cards, sizeof(player2Cards) / sizeof(Card));
+    CPlayer player2(pack2, PS_P2MAX);
+
+    const Card player3Cards[] =
+    {
+        MAKE_CARD(CS_SPIDES, CV_KING),
+        MAKE_CARD(CS_CLUBS, CV_JACK),
+        MAKE_CARD(CS_DIAMONDS, CV_7)
+    };
+    CCardPack pack3(player3Cards, sizeof(player3Cards) / sizeof(Card));
+    CPlayer player3(pack3, PS_P2MIN);
+
+    // Create a game state
+    CGameState state(player1, player2, player3);
+
+    SECTION("Calculate all cards in the game")
+    {
+        // Make sure resulting cards pack is sorted
+        CCardPack allCards = state.getCardsLeft();
+        REQUIRE(getObjStr(allCards) == " 7^ 9^ K^ 7+ 9+ J+ 7$ Q$ K$");
     }
 }

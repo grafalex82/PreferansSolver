@@ -133,7 +133,7 @@ Card CPlayer::getOptimalTurn(CGameState * pGame, CScore & retScore, bool bFirstH
     
     // Leave only those cards, that is not considered as equivalent
     Card lastCard;
-    CCardPack & cardsLeft = pGame->getCardsLeft();
+    CCardPack cardsLeft = pGame->getCardsLeft();
     for(i=0; i<availCardsPreCount; i++)
     {
         if(i == 0)

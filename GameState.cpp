@@ -115,6 +115,13 @@ std::ostream& operator<< (std::ostream& out, const CGameState & game)
     return out;
 }
 
+CCardPack CGameState::getCardsLeft()
+{
+    return m_aPlayers[0]->getCards() +
+           m_aPlayers[1]->getCards() +
+           m_aPlayers[2]->getCards();
+}
+
 Card CGameState::getOptimalTurn(CScore & score)
 {
     return m_aPlayers[m_iActivePlayer]->getOptimalTurn(this, score, (m_iCardsOnTableCount == 0));

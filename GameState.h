@@ -25,11 +25,10 @@ public:
     /**
      * @brief Create new game state
      *
-     * This constructr allows to create new game with specified players.
+     * This constructor allows creating new game state with specified players.
      *
      * It will initialize internal data as follows:
      * - Players will be initialized as specified
-     * - cards presented in game as union of cards of all players
      * - trump suit is unknown
      * - active player is player 1
      * - cards on table (cards in current trick) - empty
@@ -157,14 +156,11 @@ public:
     /**
      * @brief Retrieve the list of all cards in game.
      *
-     * This method is intended for retrieving the pack of all cards, that are present in game.
+     * This method creates a list of cards in the game as a sum of players' cards
      *
      * @return card pack of card, that present in game,
      */
-    inline CCardPack & getCardsLeft()
-    {
-        return m_cardsLeft;
-    }
+    CCardPack getCardsLeft();
 //@}
 
 ///@name Turns related
