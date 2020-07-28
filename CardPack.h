@@ -36,25 +36,11 @@ class CCardPack
 
 private:
     /**
-     * @brief Emptu Cards Pack constructor
+     * @brief Empty Cards Pack constructor
      *
      * This constructor will create an empty cards pack
      */
     CCardPack();
-
-
-private:
-    /**
-     * @brief Cards Pack constructor (from cards array)
-     *
-     * This constructor will create cards pack and fill it with values from specified array of cards.
-     * Constructor provides cards sorting to provide maximum performance
-     *
-     * @param pCards    - array of cards
-     * @param iCount    - number of cards in array
-     */
-    CCardPack(const Card * pCards, unsigned int iCount);
-
 
 public:    
     /**

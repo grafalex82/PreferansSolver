@@ -7,13 +7,6 @@ CCardPack::CCardPack()
     m_iCardsCount = 0;
 }
 
-CCardPack::CCardPack(const Card * pCards, unsigned int iCount)
-{
-    memcpy(m_aCards, pCards, iCount * sizeof(Card));
-    std::sort(m_aCards, m_aCards + iCount * sizeof(Card));
-    m_iCardsCount = iCount;
-}
-
 CCardPack::CCardPack(const char * cards)
 {
     m_iCardsCount = 0;
@@ -164,37 +157,17 @@ CCardPack CCardPack::operator +(const CCardPack &rPack)
     if(m_iCardsCount + rPack.m_iCardsCount > MAX_CARDS)
         throw "CCardPack::operator+(): Too many cards to combine";
 
-    Card temp[MAX_CARDS];
-    
-    unsigned int i = 0;
-    unsigned int j = 0; 
-    unsigned int idx = 0;
-    while(i<m_iCardsCount || j<rPack.m_iCardsCount)
-    {
-        if(i < m_iCardsCount)
-        {
-            if(j < rPack.m_iCardsCount)
-            {
-                if(m_aCards[i] < rPack.m_aCards[j])
-                    temp[idx++] = m_aCards[i++];
-                else
-                if(rPack.m_aCards[j] < m_aCards[i])
-                    temp[idx++] = rPack.m_aCards[j++];
-                else
-                    throw "CCardPack::operator+(): one card is found in both packs";
-            }
-            else
-            {
-                temp[idx++] = m_aCards[i++];
-            }
-        }
-        else
-        {
-            temp[idx++] = rPack.m_aCards[j++];
-        }
-    }
-    
-    return CCardPack(temp, idx);
+    // Make a copy
+    CCardPack res(*this);
+
+    // Add another array
+    std::copy(rPack.m_aCards, rPack.m_aCards + rPack.m_iCardsCount, res.m_aCards + res.m_iCardsCount);
+    res.m_iCardsCount += rPack.m_iCardsCount;
+
+    // Finally sort the result
+    std::sort(res.m_aCards, res.m_aCards + res.m_iCardsCount);
+
+    return res;
 }
 
 CCardPack CCardPack::getSubset(CardSuit suit) const
