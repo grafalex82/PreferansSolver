@@ -58,6 +58,20 @@ CGameState::~CGameState()
     releaseCardsLeft();
 }
 
+CCardPack CGameState::getCardsLeft()
+{
+    return m_aPlayers[0]->getCards() +
+           m_aPlayers[1]->getCards() +
+           m_aPlayers[2]->getCards();
+}
+
+void CGameState::setUpCardsLeft()
+{
+    releaseCardsLeft();
+    m_pCardsLeft = new CCardPack(getCardsLeft()); // TODO: optimize object creation
+    m_bOwnsCardsLeft = true;
+}
+
 void CGameState::releaseCardsLeft()
 {
     if(!m_bOwnsCardsLeft)
@@ -125,13 +139,6 @@ std::ostream& operator<< (std::ostream& out, const CGameState & game)
     return out;
 }
 
-CCardPack CGameState::getCardsLeft()
-{
-    return m_aPlayers[0]->getCards() +
-           m_aPlayers[1]->getCards() +
-           m_aPlayers[2]->getCards();
-}
-
 Card CGameState::getOptimalTurn(CScore & score)
 {
     return m_aPlayers[m_iActivePlayer]->getOptimalTurn(this, score, (m_iCardsOnTableCount == 0));
@@ -196,11 +203,31 @@ void CGameState::makeTurn(Card card)
     }
 }
 
+
+void CGameState::setUpNewTrick()
+{
+    setUpCardsLeft();
+    m_currentSuit = CS_UNKNOWN;
+}
+
+CCardPack CGameState::getActivePlayerValidTurns()
+{
+    // Get list of turns and filter out equivalent ones
+    CCardPack validTurns = m_aPlayers[m_iActivePlayer]->getListOfValidTurns(m_currentSuit, m_trumpSuit);
+    validTurns.filterOutEquivalentCards(*m_pCardsLeft);
+
+    return validTurns;
+}
+
 void CGameState::playGameRecursive()
 {
 //    std::cout << "Current state: " << *this << std::endl;
 
-    CCardPack possibleTurns = m_aPlayers[m_iActivePlayer]->getListOfValidTurns(m_currentSuit, m_trumpSuit);
+    // Cleanup and prepare for the new trick
+    if(m_iCardsOnTableCount == 0)
+        setUpCardsLeft();
+
+    CCardPack possibleTurns = getActivePlayerValidTurns();
 
     // end of recursion, if no turns can be done
     if(possibleTurns.getCardsCount() == 0)

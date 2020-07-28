@@ -231,11 +231,22 @@ public:
      */
     void makeTurn(Card card);
 
-
+    void setUpNewTrick();
+    CCardPack getActivePlayerValidTurns();
     void playGameRecursive();
 //@}
     
 protected:
+    /**
+     * @brief Set up a new Cards Left object for a trick
+     *
+     * This is a helper method to create cards left object. It is supposed there
+     * will be just one cards left object for all states related to the trick. The
+     * root state of the trick will own cards left object, while all others will just
+     * have a pointer.
+     */
+    void setUpCardsLeft();
+
     /**
      * @brief Release cards left object
      *
