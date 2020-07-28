@@ -115,6 +115,41 @@ bool CCardPack::areCardsEquivalent(Card left, Card right) const
     return false;
 }
 
+void CCardPack::filterOutEquivalentCards(const CCardPack & ref)
+{
+    // if the pack contains only 1 card (or 0) - nothing to do with filtering
+    if(m_iCardsCount <= 1)
+        return;
+
+    unsigned int idx=0;
+    unsigned int refIdx=0;
+    unsigned int targetIdx = 0;
+    do
+    {
+        // Get cards to compare
+        Card card = m_aCards[idx++];
+        Card nextCard = m_aCards[idx];
+
+        // Search for the card in reference deck
+        while(ref.m_aCards[refIdx] != card)
+            refIdx++;
+
+        // Skip equivalent cards
+        if(getSuit(card) == getSuit(nextCard) &&
+           card == ref.m_aCards[refIdx] &&
+           nextCard == ref.m_aCards[refIdx + 1])
+            continue;
+
+        // Store non-equivalent cards
+        m_aCards[targetIdx++] = card;
+    }
+    while(idx < m_iCardsCount - 1);
+
+    // Fill the remaining card
+    m_aCards[targetIdx] = m_aCards[idx];
+    m_iCardsCount = targetIdx + 1;
+}
+
 CCardPack CCardPack::operator +(const CCardPack &rPack)
 {
     if(m_iCardsCount + rPack.m_iCardsCount > MAX_CARDS)

@@ -198,6 +198,7 @@ TEST_CASE( "Card Pack - card equivalence", "Card Pack")
         MAKE_CARD(CS_SPIDES, CV_7),
         MAKE_CARD(CS_SPIDES, CV_8),
         MAKE_CARD(CS_SPIDES, CV_9),
+        MAKE_CARD(CS_SPIDES, CV_JACK),
         MAKE_CARD(CS_SPIDES, CV_QUEEN),
         MAKE_CARD(CS_SPIDES, CV_KING),
         MAKE_CARD(CS_SPIDES, CV_ACE),
@@ -205,15 +206,122 @@ TEST_CASE( "Card Pack - card equivalence", "Card Pack")
     };
     CCardPack pack(prefCards, sizeof(prefCards) / sizeof(Card));
 
-    // Cards located next to each other are equivalent regardless of their value
-    REQUIRE(pack.areCardsEquivalent(MAKE_CARD(CS_SPIDES, CV_7), MAKE_CARD(CS_SPIDES, CV_8)));
-    REQUIRE(pack.areCardsEquivalent(MAKE_CARD(CS_SPIDES, CV_9), MAKE_CARD(CS_SPIDES, CV_QUEEN)));
+    SECTION("Check areCardsEquivalent()")
+    {
+        // Cards located next to each other are equivalent regardless of their value
+        REQUIRE(pack.areCardsEquivalent(MAKE_CARD(CS_SPIDES, CV_7), MAKE_CARD(CS_SPIDES, CV_8)));
+        REQUIRE(pack.areCardsEquivalent(MAKE_CARD(CS_SPIDES, CV_9), MAKE_CARD(CS_SPIDES, CV_JACK)));
 
-    // Cards located separately cannot be equivalent (TODO: unless they belong to the same player)
-    REQUIRE(pack.areCardsEquivalent(MAKE_CARD(CS_SPIDES, CV_7), MAKE_CARD(CS_SPIDES, CV_QUEEN)) == false);
+        // Cards located separately cannot be equivalent (TODO: unless they belong to the same player)
+        REQUIRE(pack.areCardsEquivalent(MAKE_CARD(CS_SPIDES, CV_7), MAKE_CARD(CS_SPIDES, CV_QUEEN)) == false);
 
-    // Cards of different suits can't be equivalent
-    REQUIRE(pack.areCardsEquivalent(MAKE_CARD(CS_SPIDES, CV_ACE), MAKE_CARD(CS_CLUBS, CV_ACE)) == false);
+        // Cards of different suits can't be equivalent
+        REQUIRE(pack.areCardsEquivalent(MAKE_CARD(CS_SPIDES, CV_ACE), MAKE_CARD(CS_CLUBS, CV_ACE)) == false);
+    }
+
+    SECTION("Check filterOutEquivalentTurns - a single card")
+    {
+        const Card pref2Cards[] =
+        {
+            MAKE_CARD(CS_SPIDES, CV_9)
+        };
+        CCardPack pack2(pref2Cards, sizeof(pref2Cards) / sizeof(Card));
+
+        pack2.filterOutEquivalentCards(pack);
+        REQUIRE(pack2.getPackStr() == " 9^");
+    }
+
+    SECTION("Check filterOutEquivalentTurns - another single card")
+    {
+        const Card pref2Cards[] =
+        {
+            MAKE_CARD(CS_CLUBS, CV_ACE)
+        };
+        CCardPack pack2(pref2Cards, sizeof(pref2Cards) / sizeof(Card));
+
+        pack2.filterOutEquivalentCards(pack);
+        REQUIRE(pack2.getPackStr() == " A+");
+    }
+
+    SECTION("Check filterOutEquivalentTurns - a few consequent cards")
+    {
+        const Card pref2Cards[] =
+        {
+            MAKE_CARD(CS_SPIDES, CV_7),
+            MAKE_CARD(CS_SPIDES, CV_8),
+            MAKE_CARD(CS_SPIDES, CV_9)
+        };
+        CCardPack pack2(pref2Cards, sizeof(pref2Cards) / sizeof(Card));
+
+        pack2.filterOutEquivalentCards(pack);
+        REQUIRE(pack2.getPackStr() == " 9^");
+    }
+
+    SECTION("Check filterOutEquivalentTurns - a few groups of consequent cards")
+    {
+        const Card pref2Cards[] =
+        {
+            MAKE_CARD(CS_SPIDES, CV_7),
+            MAKE_CARD(CS_SPIDES, CV_8),
+            MAKE_CARD(CS_SPIDES, CV_9),
+            MAKE_CARD(CS_SPIDES, CV_KING),
+            MAKE_CARD(CS_SPIDES, CV_ACE)
+        };
+        CCardPack pack2(pref2Cards, sizeof(pref2Cards) / sizeof(Card));
+
+        pack2.filterOutEquivalentCards(pack);
+        REQUIRE(pack2.getPackStr() == " 9^ A^");
+    }
+
+    SECTION("Check filterOutEquivalentTurns - more groups of consequent cards")
+    {
+        const Card pref2Cards[] =
+        {
+            MAKE_CARD(CS_SPIDES, CV_7),
+            MAKE_CARD(CS_SPIDES, CV_8),
+            MAKE_CARD(CS_SPIDES, CV_JACK),
+            MAKE_CARD(CS_SPIDES, CV_QUEEN),
+            MAKE_CARD(CS_SPIDES, CV_ACE),
+            MAKE_CARD(CS_CLUBS, CV_ACE)
+        };
+        CCardPack pack2(pref2Cards, sizeof(pref2Cards) / sizeof(Card));
+
+        pack2.filterOutEquivalentCards(pack);
+        REQUIRE(pack2.getPackStr() == " 8^ Q^ A^ A+");
+    }
+
+    SECTION("Check filterOutEquivalentTurns - consecutive group of different suits")
+    {
+        const Card pref2Cards[] =
+        {
+            MAKE_CARD(CS_SPIDES, CV_KING),
+            MAKE_CARD(CS_SPIDES, CV_ACE),
+            MAKE_CARD(CS_CLUBS, CV_ACE)
+        };
+        CCardPack pack2(pref2Cards, sizeof(pref2Cards) / sizeof(Card));
+
+        pack2.filterOutEquivalentCards(pack);
+        REQUIRE(pack2.getPackStr() == " A^ A+");
+    }
+
+    SECTION("Check filterOutEquivalentTurns - packs are the same")
+    {
+        const Card pref2Cards[] =
+        {
+            MAKE_CARD(CS_SPIDES, CV_7),
+            MAKE_CARD(CS_SPIDES, CV_8),
+            MAKE_CARD(CS_SPIDES, CV_9),
+            MAKE_CARD(CS_SPIDES, CV_JACK),
+            MAKE_CARD(CS_SPIDES, CV_QUEEN),
+            MAKE_CARD(CS_SPIDES, CV_KING),
+            MAKE_CARD(CS_SPIDES, CV_ACE),
+            MAKE_CARD(CS_CLUBS, CV_ACE)
+        };
+        CCardPack pack2(pref2Cards, sizeof(pref2Cards) / sizeof(Card));
+
+        pack2.filterOutEquivalentCards(pack);
+        REQUIRE(pack2.getPackStr() == " A^ A+");
+    }
 }
 
 TEST_CASE("Check main CScore operations", "Score")

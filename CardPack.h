@@ -281,6 +281,18 @@ public:
      * @param suit - the suit to include into a resulting subset
      */
     CCardPack getSubset(CardSuit suit) const;
+
+    /**
+     * @brief filter out equivalent cards
+     *
+     * This method filters out cards that have the same value in the given reference
+     * card pack. Cards are equivalent if they are located contiguously in the reference
+     * pack.
+     *
+     * @param suit - the suit to include into a resulting subset
+     */
+    void filterOutEquivalentCards(const CCardPack & ref);
+
 //@}
 
 protected:
