@@ -231,8 +231,8 @@ void CGameState::playGameRecursive()
     if(possibleTurns.getCardsCount() == 0)
     {
         iLeafsCount++;
-        if(iLeafsCount % 1000 == 0)
-            std::cout << "\rReached end of the path " << iLeafsCount << ": " << currentPath << std::endl;
+        if(iLeafsCount % 10000 == 0)
+            std::cout << "Reached end of the path " << iLeafsCount << ": " << currentPath << std::endl;
         return;
     }
 
