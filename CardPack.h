@@ -252,14 +252,6 @@ public:
 //@{
 public:
     /**
-     * @brief Shuffle the current cards pack
-     *
-     * This method is intended for shuffle the current card pack.
-     *
-     * @note Shuffling algorithm may be refined
-     */
-    //void shuffle();
-    /**
      * @brief Remove card
      *
      * This method is intended for removing the specified card from the current cards pack.

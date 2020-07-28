@@ -63,37 +63,10 @@ std::string CCardPack::getPackStr() const
     return sRes;
 }
 
-#if 0
-void CCardPack::shuffle()
-{
-    std::vector<Card> vTemp;
-    for(unsigned int i=0; i<m_iCardsCount; i++)
-	    vTemp.push_back(m_aCards[i]);
-    
-    m_iCardsCount = 0;
-    
-    while(vTemp.size() != 0)
-    {
-        int idx = rand() % vTemp.size();
-        m_aCards[m_iCardsCount++] = vTemp[idx];
-        vTemp.erase(vTemp.begin() + idx);
-    }
-}
-#endif //0
-
 void CCardPack::removeCard(Card card)
 {
-    for(unsigned int i=0; i<m_iCardsCount; i++)
-    {
-    	if(m_aCards[i] == card)
-	    {
-	        for(; i < m_iCardsCount - 1; i++)
-		        m_aCards[i] = m_aCards[i+1];
-	    
-	        m_iCardsCount--;
-	        break;
-	    }
-    }
+    std::remove(m_aCards, m_aCards + m_iCardsCount, card);
+    m_iCardsCount--;
 }
 
 bool CCardPack::areCardsEquivalent(Card left, Card right) const
@@ -160,7 +133,7 @@ CCardPack CCardPack::operator +(const CCardPack &rPack)
     // Make a copy
     CCardPack res(*this);
 
-    // Add another array
+    // Concatenate other pack's array
     std::copy(rPack.m_aCards, rPack.m_aCards + rPack.m_iCardsCount, res.m_aCards + res.m_iCardsCount);
     res.m_iCardsCount += rPack.m_iCardsCount;
 
