@@ -196,7 +196,7 @@ void CGameState::makeTurn(Card card)
         // Prepare for new trick
         for(unsigned int i=0; i<3; i++)
             m_pCardsLeft->removeCard(m_aCardsOnTable[i]);
-	    
+
         m_iCardsOnTableCount = 0;
         m_currentSuit = CS_UNKNOWN;
         m_iActivePlayer = iWinner;
@@ -228,12 +228,13 @@ void CGameState::playGameRecursive()
         setUpCardsLeft();
 
     CCardPack possibleTurns = getActivePlayerValidTurns();
+    //std::cout << "Player's valid turns are: " << possibleTurns << std::endl;
 
     // end of recursion, if no turns can be done
     if(possibleTurns.getCardsCount() == 0)
     {
         iLeafsCount++;
-        if(iLeafsCount % 100000 == 0)
+        if(iLeafsCount % 1000 == 0)
             std::cout << "\rReached end of the path " << iLeafsCount << ": " << currentPath << std::endl;
         return;
     }
@@ -242,8 +243,8 @@ void CGameState::playGameRecursive()
     {
         Card card = possibleTurns.getCard(i);
 
-//        std::cout << "Current Path: " << currentPath << std::endl;
-//        std::cout << "Player " << m_iActivePlayer << " plays " << card << std::endl;
+        //std::cout << "Current Path: " << currentPath << std::endl;
+        //std::cout << "Player " << m_iActivePlayer << " plays " << card << std::endl;
 
         std::string currentPathBackup = currentPath;
         std::stringstream str;
