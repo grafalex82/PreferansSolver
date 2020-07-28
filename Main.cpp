@@ -68,9 +68,8 @@ int main()
 
     CScore initialScore;
     game.setScore(initialScore);
-    clock_t tStop = clock();
-
     game.playGameRecursive();
+    clock_t tStop = clock();
 
     std::cout << "Whole tree traversed in " << (double)(tStop - tStart)/CLOCKS_PER_SEC << " seconds" << std::endl;
 
