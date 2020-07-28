@@ -156,23 +156,8 @@ TEST_CASE( "Card Pack creation and basic operations", "Card Pack")
 TEST_CASE( "Card Pack additions/removal", "Card Pack")
 {
     // Make 2 non-intersecting card packs
-    const Card pack1Cards[] =
-    {
-        MAKE_CARD(CS_SPIDES, CV_7),
-        MAKE_CARD(CS_SPIDES, CV_8),
-        MAKE_CARD(CS_SPIDES, CV_QUEEN),
-        MAKE_CARD(CS_SPIDES, CV_KING)
-    };
-    CCardPack pack1(pack1Cards, sizeof(pack1Cards) / sizeof(Card));
-
-    const Card pack2Cards[] =
-    {
-        MAKE_CARD(CS_SPIDES, CV_9),
-        MAKE_CARD(CS_SPIDES, CV_10),
-        MAKE_CARD(CS_SPIDES, CV_JACK),
-        MAKE_CARD(CS_SPIDES, CV_ACE)
-    };
-    CCardPack pack2(pack2Cards, sizeof(pack2Cards) / sizeof(Card));
+    CCardPack pack1("7^ 8^ Q^ K^");
+    CCardPack pack2("9^ 1^ J^ A^");
 
     // Add card packs and check the result has all the cards, and it is sorted
     CCardPack pack = pack1 + pack2;
@@ -187,20 +172,8 @@ TEST_CASE( "Card Pack additions/removal", "Card Pack")
 
 TEST_CASE( "Card Pack - filtering", "Card Pack")
 {
-    const Card prefCards[] =
-    {
-        MAKE_CARD(CS_SPIDES, CV_7),
-        MAKE_CARD(CS_SPIDES, CV_8),
-        MAKE_CARD(CS_CLUBS, CV_9),
-        MAKE_CARD(CS_CLUBS, CV_10),
-        MAKE_CARD(CS_DIAMONDS, CV_JACK),
-        MAKE_CARD(CS_DIAMONDS, CV_QUEEN),
-        MAKE_CARD(CS_HEARTS, CV_KING),
-        MAKE_CARD(CS_HEARTS, CV_ACE)
-    };
-
     // Check card pack creation
-    CCardPack pack(prefCards, sizeof(prefCards) / sizeof(Card));
+    CCardPack pack("7^ 8^ 9+ 1+ J$ Q$ K@ A@");
 
     // Only clubs remain
     REQUIRE(pack.getSubset(CS_CLUBS).getPackStr() == " 9+ 1+");
@@ -215,18 +188,7 @@ TEST_CASE( "Card Pack - filtering", "Card Pack")
 
 TEST_CASE( "Card Pack - card equivalence", "Card Pack")
 {
-    const Card prefCards[] =
-    {
-        MAKE_CARD(CS_SPIDES, CV_7),
-        MAKE_CARD(CS_SPIDES, CV_8),
-        MAKE_CARD(CS_SPIDES, CV_9),
-        MAKE_CARD(CS_SPIDES, CV_JACK),
-        MAKE_CARD(CS_SPIDES, CV_QUEEN),
-        MAKE_CARD(CS_SPIDES, CV_KING),
-        MAKE_CARD(CS_SPIDES, CV_ACE),
-        MAKE_CARD(CS_CLUBS, CV_ACE)
-    };
-    CCardPack pack(prefCards, sizeof(prefCards) / sizeof(Card));
+    CCardPack pack("7^ 8^ 9^ J^ Q^ K^ A^ A+");
 
     SECTION("Check areCardsEquivalent()")
     {
@@ -243,11 +205,7 @@ TEST_CASE( "Card Pack - card equivalence", "Card Pack")
 
     SECTION("Check filterOutEquivalentTurns - a single card")
     {
-        const Card pref2Cards[] =
-        {
-            MAKE_CARD(CS_SPIDES, CV_9)
-        };
-        CCardPack pack2(pref2Cards, sizeof(pref2Cards) / sizeof(Card));
+        CCardPack pack2("9^");
 
         pack2.filterOutEquivalentCards(pack);
         REQUIRE(pack2.getPackStr() == " 9^");
@@ -255,11 +213,7 @@ TEST_CASE( "Card Pack - card equivalence", "Card Pack")
 
     SECTION("Check filterOutEquivalentTurns - another single card")
     {
-        const Card pref2Cards[] =
-        {
-            MAKE_CARD(CS_CLUBS, CV_ACE)
-        };
-        CCardPack pack2(pref2Cards, sizeof(pref2Cards) / sizeof(Card));
+        CCardPack pack2("A+");
 
         pack2.filterOutEquivalentCards(pack);
         REQUIRE(pack2.getPackStr() == " A+");
@@ -267,13 +221,7 @@ TEST_CASE( "Card Pack - card equivalence", "Card Pack")
 
     SECTION("Check filterOutEquivalentTurns - a few consequent cards")
     {
-        const Card pref2Cards[] =
-        {
-            MAKE_CARD(CS_SPIDES, CV_7),
-            MAKE_CARD(CS_SPIDES, CV_8),
-            MAKE_CARD(CS_SPIDES, CV_9)
-        };
-        CCardPack pack2(pref2Cards, sizeof(pref2Cards) / sizeof(Card));
+        CCardPack pack2("7^ 8^ 9^");
 
         pack2.filterOutEquivalentCards(pack);
         REQUIRE(pack2.getPackStr() == " 9^");
@@ -281,15 +229,7 @@ TEST_CASE( "Card Pack - card equivalence", "Card Pack")
 
     SECTION("Check filterOutEquivalentTurns - a few groups of consequent cards")
     {
-        const Card pref2Cards[] =
-        {
-            MAKE_CARD(CS_SPIDES, CV_7),
-            MAKE_CARD(CS_SPIDES, CV_8),
-            MAKE_CARD(CS_SPIDES, CV_9),
-            MAKE_CARD(CS_SPIDES, CV_KING),
-            MAKE_CARD(CS_SPIDES, CV_ACE)
-        };
-        CCardPack pack2(pref2Cards, sizeof(pref2Cards) / sizeof(Card));
+        CCardPack pack2("7^ 8^ 9^    K^ A^");
 
         pack2.filterOutEquivalentCards(pack);
         REQUIRE(pack2.getPackStr() == " 9^ A^");
@@ -297,16 +237,7 @@ TEST_CASE( "Card Pack - card equivalence", "Card Pack")
 
     SECTION("Check filterOutEquivalentTurns - more groups of consequent cards")
     {
-        const Card pref2Cards[] =
-        {
-            MAKE_CARD(CS_SPIDES, CV_7),
-            MAKE_CARD(CS_SPIDES, CV_8),
-            MAKE_CARD(CS_SPIDES, CV_JACK),
-            MAKE_CARD(CS_SPIDES, CV_QUEEN),
-            MAKE_CARD(CS_SPIDES, CV_ACE),
-            MAKE_CARD(CS_CLUBS, CV_ACE)
-        };
-        CCardPack pack2(pref2Cards, sizeof(pref2Cards) / sizeof(Card));
+        CCardPack pack2("7^ 8^   J^ Q^   A^   A+");
 
         pack2.filterOutEquivalentCards(pack);
         REQUIRE(pack2.getPackStr() == " 8^ Q^ A^ A+");
@@ -314,13 +245,7 @@ TEST_CASE( "Card Pack - card equivalence", "Card Pack")
 
     SECTION("Check filterOutEquivalentTurns - consecutive group of different suits")
     {
-        const Card pref2Cards[] =
-        {
-            MAKE_CARD(CS_SPIDES, CV_KING),
-            MAKE_CARD(CS_SPIDES, CV_ACE),
-            MAKE_CARD(CS_CLUBS, CV_ACE)
-        };
-        CCardPack pack2(pref2Cards, sizeof(pref2Cards) / sizeof(Card));
+        CCardPack pack2("K^ A^   A+");
 
         pack2.filterOutEquivalentCards(pack);
         REQUIRE(pack2.getPackStr() == " A^ A+");
@@ -328,18 +253,7 @@ TEST_CASE( "Card Pack - card equivalence", "Card Pack")
 
     SECTION("Check filterOutEquivalentTurns - packs are the same")
     {
-        const Card pref2Cards[] =
-        {
-            MAKE_CARD(CS_SPIDES, CV_7),
-            MAKE_CARD(CS_SPIDES, CV_8),
-            MAKE_CARD(CS_SPIDES, CV_9),
-            MAKE_CARD(CS_SPIDES, CV_JACK),
-            MAKE_CARD(CS_SPIDES, CV_QUEEN),
-            MAKE_CARD(CS_SPIDES, CV_KING),
-            MAKE_CARD(CS_SPIDES, CV_ACE),
-            MAKE_CARD(CS_CLUBS, CV_ACE)
-        };
-        CCardPack pack2(pref2Cards, sizeof(pref2Cards) / sizeof(Card));
+        CCardPack pack2("7^ 8^ 9^ J^ Q^ K^ A^ A+");
 
         pack2.filterOutEquivalentCards(pack);
         REQUIRE(pack2.getPackStr() == " A^ A+");
@@ -403,16 +317,7 @@ TEST_CASE("CScore player strategies", "Score")
 
 TEST_CASE("Player's valid turns", "Player")
 {
-    const Card prefCards[] =
-    {
-        MAKE_CARD(CS_SPIDES, CV_7),
-        MAKE_CARD(CS_SPIDES, CV_8),
-        MAKE_CARD(CS_CLUBS, CV_9),
-        MAKE_CARD(CS_CLUBS, CV_10),
-        MAKE_CARD(CS_DIAMONDS, CV_JACK),
-        MAKE_CARD(CS_DIAMONDS, CV_QUEEN)
-    };
-    CCardPack pack(prefCards, sizeof(prefCards) / sizeof(Card));
+    CCardPack pack("7^ 8^ 9+ 1+ J$ Q$");
     CPlayer player(pack, PS_P1MAX);
 
     SECTION("No trick suit specified (all turns are valid)")
@@ -443,31 +348,13 @@ TEST_CASE("Player's valid turns", "Player")
 TEST_CASE("Game State ", "Game State")
 {
     // Create 3 players
-    const Card player1Cards[] =
-    {
-        MAKE_CARD(CS_SPIDES, CV_7),
-        MAKE_CARD(CS_CLUBS, CV_9),
-        MAKE_CARD(CS_DIAMONDS, CV_QUEEN)
-    };
-    CCardPack pack1(player1Cards, sizeof(player1Cards) / sizeof(Card));
+    CCardPack pack1("7^ 9+ Q$");
     CPlayer player1(pack1, PS_P2MIN);
 
-    const Card player2Cards[] =
-    {
-        MAKE_CARD(CS_SPIDES, CV_9),
-        MAKE_CARD(CS_CLUBS, CV_7),
-        MAKE_CARD(CS_DIAMONDS, CV_KING)
-    };
-    CCardPack pack2(player2Cards, sizeof(player2Cards) / sizeof(Card));
+    CCardPack pack2("9^ 7+ K$");
     CPlayer player2(pack2, PS_P2MAX);
 
-    const Card player3Cards[] =
-    {
-        MAKE_CARD(CS_SPIDES, CV_KING),
-        MAKE_CARD(CS_CLUBS, CV_JACK),
-        MAKE_CARD(CS_DIAMONDS, CV_7)
-    };
-    CCardPack pack3(player3Cards, sizeof(player3Cards) / sizeof(Card));
+    CCardPack pack3("K^ J+ 7$");
     CPlayer player3(pack3, PS_P2MIN);
 
     // Create a game state

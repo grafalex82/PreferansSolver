@@ -43,7 +43,7 @@ private:
     CCardPack();
 
 
-public:    
+private:
     /**
      * @brief Cards Pack constructor (from cards array)
      *
@@ -55,6 +55,8 @@ public:
      */
     CCardPack(const Card * pCards, unsigned int iCount);
 
+
+public:    
     /**
      * @brief Cards Pack constructor (from string)
      *
