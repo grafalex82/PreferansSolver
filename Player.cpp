@@ -211,6 +211,10 @@ Card CPlayer::getOptimalTurn(CGameState * pGame, CScore & retScore, bool bFirstH
 
 CCardPack CPlayer::getListOfValidTurns(CardSuit suit, CardSuit trump)
 {
+    // All cards are valid if no suit specified
+    if(suit == CS_UNKNOWN)
+        return m_cardPack;
+
     // Search for requested suit first
     if(m_cardPack.hasSuit(suit))
         return m_cardPack.getSubset(suit);

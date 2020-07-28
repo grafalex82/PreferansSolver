@@ -393,6 +393,12 @@ TEST_CASE("Player's valid turns", "Player")
     CCardPack pack(prefCards, sizeof(prefCards) / sizeof(Card));
     CPlayer player(pack, PS_P1MAX);
 
+    SECTION("No trick suit specified (all turns are valid)")
+    {
+        CCardPack pack2 = player.getListOfValidTurns(CS_UNKNOWN, CS_DIAMONDS);
+        REQUIRE(pack2.getPackStr() == " 7^ 8^ 9+ 1+ J$ Q$");
+    }
+
     SECTION("Play spides")
     {
         CCardPack pack2 = player.getListOfValidTurns(CS_SPIDES, CS_DIAMONDS);
