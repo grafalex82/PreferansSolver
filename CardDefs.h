@@ -85,6 +85,37 @@ inline char getSuitSymb(CardSuit suit)
     
     throw "getSuitSymb(): Unrecognized suit";
 }
+
+/**
+ * @brief Parse suit symbol
+ *
+ * This function parses the given symbol and returns suit value
+ *
+ * @throw "const char *" exception, indicates cause of error
+ *
+ * @param c - character to parse
+ *
+ * @return parsed suit
+ */
+inline CardSuit parseSuitSymb(char c)
+{
+    switch(c)
+    {
+    case SUIT_SYMB_SPIDES:
+        return CS_SPIDES;
+    case SUIT_SYMB_CLUBS:
+        return CS_CLUBS;
+    case SUIT_SYMB_DIAMONDS:
+        return CS_DIAMONDS;
+    case SUIT_SYMB_HEARTS:
+        return CS_HEARTS;
+    default:
+        break;
+    }
+
+    throw "parseSuitSymb(): Unrecognized suit symbol";
+}
+
 //@}
 
 /// Card values enumerator
@@ -159,6 +190,27 @@ inline char getCardValueSymb(CardValue v)
     throw "getCardValueSymb(): unknown card value";
 }
 
+/**
+ * @brief Parse the card value symbol
+ *
+ * This function parses card value symbol and returns card value
+ *
+ * @throw "const char *" exception, indicating the cause of error
+ *
+ * @param c - symbol to parse
+ *
+ * @return resulting card value
+ */
+inline CardValue parseCardValueSymb(char c)
+{
+    for(unsigned int i=0; i<sizeof(cardValueChars); i++)
+        if(cardValueChars[i] == c)
+            return static_cast<CardValue>(i);
+
+    throw "parseCardValueSymb(): unknown card value";
+}
+
+
 /// Macro for making the whole card value from card suit and card value
 #define MAKE_CARD(suit, value) static_cast<Card>((suit&0xf0) | (value & 0x0f))
 
@@ -177,6 +229,23 @@ inline std::ostream& operator<< (std::ostream & out, const Card& card)
     out << getCardValueSymb(getCardValue(card)) << getSuitSymb(getSuit(card));
     return out;
 }
+
+/**
+ * @brief Parse card
+ *
+ * This function is intended to parse a sequence of 2 chars representing a card
+ *
+ * @param cardStr - card string to parse
+ *
+ * @return card object
+ */
+inline Card parseCard(const char * cardStr)
+{
+    CardValue cv = parseCardValueSymb(cardStr[0]);
+    CardSuit cs = parseSuitSymb(cardStr[1]);
+    return MAKE_CARD(cs, cv);
+}
+
 
 /**
  * @brief Compare two cards

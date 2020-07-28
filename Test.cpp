@@ -15,6 +15,41 @@ std::string getObjStr(T obj)
     return str.str();
 }
 
+TEST_CASE( "Card basic functions", "Cards" )
+{
+    // getSuitSymb()
+    REQUIRE(getSuitSymb(CS_SPIDES) == '^');
+    REQUIRE(getSuitSymb(CS_CLUBS) == '+');
+    REQUIRE(getSuitSymb(CS_DIAMONDS) == '$');
+    REQUIRE(getSuitSymb(CS_HEARTS) == '@');
+
+    // parseSuitSymb()
+    REQUIRE(parseSuitSymb('^') == CS_SPIDES);
+    REQUIRE(parseSuitSymb('+') == CS_CLUBS);
+    REQUIRE(parseSuitSymb('$') == CS_DIAMONDS);
+    REQUIRE(parseSuitSymb('@') == CS_HEARTS);
+
+    // getCardValueSymb()
+    REQUIRE(getCardValueSymb(CV_2) == '2');
+    REQUIRE(getCardValueSymb(CV_10) == '1');
+    REQUIRE(getCardValueSymb(CV_JACK) == 'J');
+    REQUIRE(getCardValueSymb(CV_QUEEN) == 'Q');
+    REQUIRE(getCardValueSymb(CV_KING) == 'K');
+    REQUIRE(getCardValueSymb(CV_ACE) == 'A');
+
+    // parseCardValueSymb()
+    REQUIRE(parseCardValueSymb('2') == CV_2);
+    REQUIRE(parseCardValueSymb('1') == CV_10);
+    REQUIRE(parseCardValueSymb('J') == CV_JACK);
+    REQUIRE(parseCardValueSymb('Q') == CV_QUEEN);
+    REQUIRE(parseCardValueSymb('K') == CV_KING);
+    REQUIRE(parseCardValueSymb('A') == CV_ACE);
+
+    // parseCard()
+    REQUIRE(parseCard("K+") == MAKE_CARD(CS_CLUBS, CV_KING));
+    REQUIRE(parseCard("Q@") == MAKE_CARD(CS_HEARTS, CV_QUEEN));
+}
+
 TEST_CASE( "Card functions", "Cards" )
 {
     Card card = MAKE_CARD(CS_CLUBS, CV_KING);
