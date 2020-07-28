@@ -194,9 +194,6 @@ void CGameState::makeTurn(Card card)
         m_score.incPlayerScore(iWinner);
 
         // Prepare for new trick
-        for(unsigned int i=0; i<3; i++)
-            m_pCardsLeft->removeCard(m_aCardsOnTable[i]);
-
         m_iCardsOnTableCount = 0;
         m_currentSuit = CS_UNKNOWN;
         m_iActivePlayer = iWinner;
