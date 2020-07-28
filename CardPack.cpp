@@ -1,6 +1,6 @@
 #include "CardPack.h"
 
-#include <stdlib.h>
+#include <algorithm>
 
 CCardPack::CCardPack()
 {
@@ -10,16 +10,7 @@ CCardPack::CCardPack()
 CCardPack::CCardPack(const Card * pCards, unsigned int iCount)
 {
     memcpy(m_aCards, pCards, iCount * sizeof(Card));
-    for(unsigned int i=0; i<iCount; i++)
-    {
-        for(unsigned int j=i+1; j<iCount; j++)
-            if(m_aCards[i] > m_aCards[j])
-            {
-                Card temp = m_aCards[j];
-                m_aCards[j] = m_aCards[i];
-                m_aCards[i] = temp;
-            }
-    }
+    std::sort(m_aCards, m_aCards + iCount * sizeof(Card));
     m_iCardsCount = iCount;
 }
 

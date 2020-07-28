@@ -48,10 +48,8 @@ TEST_CASE( "Card basic functions", "Cards" )
     // parseCard()
     REQUIRE(parseCard("K+") == MAKE_CARD(CS_CLUBS, CV_KING));
     REQUIRE(parseCard("Q@") == MAKE_CARD(CS_HEARTS, CV_QUEEN));
-}
 
-TEST_CASE( "Card functions", "Cards" )
-{
+    // Old style MAKE_CARD macro
     Card card = MAKE_CARD(CS_CLUBS, CV_KING);
     REQUIRE(card == 0x1B); // Card internal representation
     REQUIRE(getSuit(card) == CS_CLUBS); // getSuit()
@@ -59,6 +57,7 @@ TEST_CASE( "Card functions", "Cards" )
     REQUIRE(getCardValue(card) == CV_KING); // getCardValue()
     REQUIRE(getCardValueSymb(getCardValue(card)) == 'K'); // getCardValueSymb()
 
+    // Card printing
     REQUIRE(getObjStr(card) == "K+");
 }
 
@@ -125,15 +124,16 @@ TEST_CASE( "Card comparison", "Cards" )
 
 TEST_CASE( "Card Pack creation and basic operations", "Card Pack")
 {
+    // Note: cards are shuffled
     const Card prefCards[] =
     {
-        MAKE_CARD(CS_SPIDES, CV_7),
-        MAKE_CARD(CS_SPIDES, CV_8),
         MAKE_CARD(CS_SPIDES, CV_9),
-        MAKE_CARD(CS_SPIDES, CV_10),
-        MAKE_CARD(CS_SPIDES, CV_JACK),
-        MAKE_CARD(CS_SPIDES, CV_QUEEN),
+        MAKE_CARD(CS_SPIDES, CV_7),
         MAKE_CARD(CS_SPIDES, CV_KING),
+        MAKE_CARD(CS_SPIDES, CV_10),
+        MAKE_CARD(CS_SPIDES, CV_QUEEN),
+        MAKE_CARD(CS_SPIDES, CV_JACK),
+        MAKE_CARD(CS_SPIDES, CV_8),
         MAKE_CARD(CS_SPIDES, CV_ACE)
     };
 
