@@ -45,17 +45,26 @@ private:
 
 public:    
     /**
-     * @brief Cards Pack constructor
+     * @brief Cards Pack constructor (from cards array)
      *
-     * This constructor will create cards pack and fills it with values from specified array of cards.
-     *
-     * Constructor provides cards sorting to provide maximum performance. Due to cards count is not big,
-     * the bubble sorting is used :)
+     * This constructor will create cards pack and fill it with values from specified array of cards.
+     * Constructor provides cards sorting to provide maximum performance
      *
      * @param pCards    - array of cards
      * @param iCount    - number of cards in array
      */
     CCardPack(const Card * pCards, unsigned int iCount);
+
+    /**
+     * @brief Cards Pack constructor (from string)
+     *
+     * This constructor will parse given string and create cards pack with parsed cards
+     * Constructor provides cards sorting to provide maximum performance
+     *
+     * @param cards     - string to parse
+     */
+    CCardPack(const char * cards);
+
     /**
      * @brief Cards Pack copy constructor
      *

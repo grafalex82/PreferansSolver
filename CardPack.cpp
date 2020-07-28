@@ -14,6 +14,24 @@ CCardPack::CCardPack(const Card * pCards, unsigned int iCount)
     m_iCardsCount = iCount;
 }
 
+CCardPack::CCardPack(const char * cards)
+{
+    m_iCardsCount = 0;
+    while(*cards != '\0')
+    {
+        // Skip white spaces
+        while(*cards == ' ')
+            cards++;
+
+        // parse the card
+        m_aCards[m_iCardsCount++] = parseCard(cards);
+        cards += 2;
+    }
+
+    // Sort cards, just in case
+    std::sort(m_aCards, m_aCards + m_iCardsCount * sizeof(Card));
+}
+
 CCardPack::CCardPack(const CCardPack & rPack)
 {
     m_iCardsCount = rPack.m_iCardsCount;

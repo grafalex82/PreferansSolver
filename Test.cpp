@@ -124,21 +124,8 @@ TEST_CASE( "Card comparison", "Cards" )
 
 TEST_CASE( "Card Pack creation and basic operations", "Card Pack")
 {
-    // Note: cards are shuffled
-    const Card prefCards[] =
-    {
-        MAKE_CARD(CS_SPIDES, CV_9),
-        MAKE_CARD(CS_SPIDES, CV_7),
-        MAKE_CARD(CS_SPIDES, CV_KING),
-        MAKE_CARD(CS_SPIDES, CV_10),
-        MAKE_CARD(CS_SPIDES, CV_QUEEN),
-        MAKE_CARD(CS_SPIDES, CV_JACK),
-        MAKE_CARD(CS_SPIDES, CV_8),
-        MAKE_CARD(CS_SPIDES, CV_ACE)
-    };
-
-    // Check card pack creation
-    CCardPack pack(prefCards, sizeof(prefCards) / sizeof(Card));
+    // Check card pack creation (Note, cards are shuffled)
+    CCardPack pack("9^ 7^ K^ 1^ Q^ J^ 8^ A^");
     REQUIRE(pack.getCardsCount() == 8);
 
     // Check card pack copying
