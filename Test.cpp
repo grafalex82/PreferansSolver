@@ -317,8 +317,7 @@ TEST_CASE("CScore player strategies", "Score")
 
 TEST_CASE("Player's valid turns", "Player")
 {
-    CCardPack pack("7^ 8^ 9+ 1+ J$ Q$");
-    CPlayer player(pack, PS_P1MAX);
+    CPlayer player("7^ 8^ 9+ 1+ J$ Q$", PS_P1MAX);
 
     SECTION("No trick suit specified (all turns are valid)")
     {
@@ -348,14 +347,9 @@ TEST_CASE("Player's valid turns", "Player")
 TEST_CASE("Game State ", "Game State")
 {
     // Create 3 players
-    CCardPack pack1("7^ 9+ Q$");
-    CPlayer player1(pack1, PS_P2MIN);
-
-    CCardPack pack2("9^ 7+ K$");
-    CPlayer player2(pack2, PS_P2MAX);
-
-    CCardPack pack3("K^ J+ 7$");
-    CPlayer player3(pack3, PS_P2MIN);
+    CPlayer player1("7^ 9+ Q$", PS_P2MIN);
+    CPlayer player2("9^ 7+ K$", PS_P2MAX);
+    CPlayer player3("K^ J+ 7$", PS_P2MIN);
 
     // Create a game state
     CGameState state(player1, player2, player3);
