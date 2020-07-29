@@ -363,6 +363,15 @@ TEST_CASE("Game State", "Game State")
 TEST_CASE("Game path functions", "Game Path")
 {
     // create a leaf path object (one that does not really have a path, but have a score)
-    CPath path(CScore(1, 2, 3));
-    REQUIRE(getObjStr(path.getOptimalScore()) == "(1, 2, 3)");
+    CPath path1(CScore(1, 2, 3));
+    REQUIRE(getObjStr(path1.getOptimalScore()) == "(1, 2, 3)");
+
+    // Create a few more leaf objects
+    CPath path2(CScore(3, 2, 1));
+    CPath path3(CScore(1, 3, 2));
+
+    // Create a parent path object
+    CPath parentPath(PS_P2MAX);
+    REQUIRE(getObjStr(parentPath.getOptimalScore()) == "(0, 0, 0)"); // Default score
+
 }

@@ -6,7 +6,9 @@
  * @brief The game path declaration
  */
 
+#include <vector>
 
+#include "CardDefs.h"
 #include "Score.h"
 
 /**
@@ -43,6 +45,8 @@ public:
     CPath(const CScore & score);
 
 
+    CPath(PlayerStrategy strategy);
+
     /**
      * @brief Return an optimal path calculated by the object
      *
@@ -57,7 +61,15 @@ public:
     }
 
 protected:
+    /// An optimal score for this path
     CScore m_score;
+
+    /// Optimal path that leads to the score (it is stored reversed)
+    std::vector<Card> m_path;
+
+    /// A Player's strategy
+    PlayerStrategy m_strategy;
+
 };
 
 #endif // PATH_H
