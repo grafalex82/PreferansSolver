@@ -216,7 +216,7 @@ CCardPack CGameState::getActivePlayerValidTurns()
     return validTurns;
 }
 
-void CGameState::playGameRecursive()
+CScore CGameState::playGameRecursive()
 {
 //    std::cout << "Current state: " << *this << std::endl;
 
@@ -232,8 +232,8 @@ void CGameState::playGameRecursive()
     {
         iLeafsCount++;
         if(iLeafsCount % 10000 == 0)
-            std::cout << "Reached end of the path " << iLeafsCount << ": " << currentPath << std::endl;
-        return;
+            std::cout << "Reached end of the path " << iLeafsCount << ": " << currentPath << "   " << m_score << std::endl;
+        return m_score;
     }
 
     for(unsigned int i=0; i<possibleTurns.getCardsCount(); i++)
@@ -255,4 +255,7 @@ void CGameState::playGameRecursive()
 
         currentPath = currentPathBackup;
     }
+
+    // TODO: return the best score here
+    return m_score;
 }

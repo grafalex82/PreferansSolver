@@ -16,7 +16,7 @@ int main()
                     CPlayer("7^ 8^ 9^ 1^   8+   7$ 8$ 9$   8@ 9@", PS_P2MIN),
                     CPlayer("K^ A^   1+ J+ Q+   A$   1@ Q@ K@ A@", PS_P2MAX));
 
-    game.setTrumpSuit(CS_SPIDES);
+    //game.setTrumpSuit(CS_SPIDES);
 
     std::cout << game << std::endl;
 

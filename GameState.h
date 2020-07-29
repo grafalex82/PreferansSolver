@@ -233,9 +233,11 @@ public:
 
     void setUpNewTrick();
     CCardPack getActivePlayerValidTurns();
-    void playGameRecursive();
+    CScore playGameRecursive();
 //@}
     
+///@name Cards Left related functions
+//@{
 protected:
     /**
      * @brief Set up a new Cards Left object for a trick
@@ -254,6 +256,7 @@ protected:
      * reset the pointer to a default state
      */
     void releaseCardsLeft();
+//@}
 
 protected:
     /// List of players in game
