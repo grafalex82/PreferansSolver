@@ -6,6 +6,7 @@
 #include "Score.h"
 #include "Player.h"
 #include "GameState.h"
+#include "Path.h"
 
 template<class T>
 std::string getObjStr(T obj)
@@ -263,10 +264,7 @@ TEST_CASE( "Card Pack - card equivalence", "Card Pack")
 TEST_CASE("Check main CScore operations", "Score")
 {
     // Create and fill score object
-    CScore score;
-    score.setPlayerScore(0, 3);
-    score.setPlayerScore(1, 2);
-    score.setPlayerScore(2, 1);
+    CScore score(3, 2, 1);
 
     // Check created values
     REQUIRE(score.getPlayerScore(0) == 3);
@@ -344,7 +342,7 @@ TEST_CASE("Player's valid turns", "Player")
     }
 }
 
-TEST_CASE("Game State ", "Game State")
+TEST_CASE("Game State", "Game State")
 {
     // Create 3 players
     CPlayer player1("7^ 9+ Q$", PS_P2MIN);
@@ -360,4 +358,11 @@ TEST_CASE("Game State ", "Game State")
         CCardPack allCards = state.getCardsLeft();
         REQUIRE(getObjStr(allCards) == " 7^ 9^ K^ 7+ 9+ J+ 7$ Q$ K$");
     }
+}
+
+TEST_CASE("Game path functions", "Game Path")
+{
+    // create a leaf path object (one that does not really have a path, but have a score)
+    CPath path(CScore(1, 2, 3));
+    REQUIRE(getObjStr(path.getOptimalScore()) == "(1, 2, 3)");
 }

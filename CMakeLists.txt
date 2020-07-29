@@ -15,6 +15,8 @@ SET(SOURCE_FILES
     CardPack.h
     GameState.cpp
     GameState.h
+    Path.cpp
+    Path.h
     Player.cpp
     Player.h
     Score.cpp

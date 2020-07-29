@@ -51,6 +51,23 @@ public:
     }
     
     /**
+     * @brief Game score constructor
+     *
+     * This constructor fills score with specified values
+     *
+     * @param p1    - player's 1 score
+     * @param p2    - player's 2 score
+     * @param p3    - player's 3 score
+     */
+    CScore(unsigned char p1, unsigned char p2, unsigned char p3)
+    {
+        m_uPlayersScore.lPlayersScore = 0;
+        m_uPlayersScore.vPlayerScore[0] = p1;
+        m_uPlayersScore.vPlayerScore[1] = p2;
+        m_uPlayersScore.vPlayerScore[2] = p3;
+    }
+
+    /**
      * @brief Game score copy constructor
      *
      * This constructor will copy specified score
