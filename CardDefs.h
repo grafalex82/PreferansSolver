@@ -246,6 +246,21 @@ inline Card parseCard(const char * cardStr)
     return MAKE_CARD(cs, cv);
 }
 
+/**
+ * @brief Dump a card to string
+ *
+ * @param card - card to dump
+ *
+ * @return card representation string
+ */
+inline std::string getCardStr(Card card)
+{
+    char temp[3] = "  ";
+
+    temp[0] = getCardValueSymb(getCardValue(card));
+    temp[1] = getSuitSymb(getSuit(card));
+    return temp;
+}
 
 /**
  * @brief Compare two cards

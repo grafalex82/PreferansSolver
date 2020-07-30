@@ -116,6 +116,18 @@ public:
             
         m_iActivePlayer = p;
     }
+
+    /**
+     * @brief Get active player index
+     *
+     * @return Active player's index
+     */
+    inline unsigned int getActivePlayer() const
+    {
+        return m_iActivePlayer;
+    }
+
+
     
     /**
      * @brief Get trum suit

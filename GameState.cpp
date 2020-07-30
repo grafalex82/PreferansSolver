@@ -134,7 +134,8 @@ std::ostream& operator<< (std::ostream& out, const CGameState & game)
     out << "0: " << *game.m_aPlayers[0] << std::endl;
     out << "1: " << *game.m_aPlayers[1] << std::endl;
     out << "2: " << *game.m_aPlayers[2] << std::endl;
-    out << "Active player: " << game.m_iActivePlayer;
+    out << "Active player: " << game.m_iActivePlayer << std::endl;
+    out << "Current score: " << game.m_score;
     
     return out;
 }
@@ -218,7 +219,11 @@ CCardPack CGameState::getActivePlayerValidTurns()
 
 CPath CGameState::playGameRecursive()
 {
-//    std::cout << "Current state: " << *this << std::endl;
+    //std::cout << "Current state: " << *this << std::endl;
+
+    //static unsigned int iStateCounter = 0;
+    //unsigned int thisStateIndex = iStateCounter++;
+    //std::cout << "State Counter: " << thisStateIndex << std::endl;
 
     // Cleanup and prepare for the new trick
     if(m_iCardsOnTableCount == 0)
@@ -258,6 +263,8 @@ CPath CGameState::playGameRecursive()
         path.addSubPath(card, subPath);
 
         currentPath = currentPathBackup;
+
+//        std::cout << "State " << thisStateIndex << " Card " << card << " " << subPath.getOptimalScore() << std::endl;
     }
 
     return path;
