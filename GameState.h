@@ -12,6 +12,7 @@
 #include "Player.h"
 #include "Score.h"
 #include "CardPack.h"
+#include "Path.h"
 
 /**
  * @brief The Game State
@@ -233,7 +234,7 @@ public:
 
     void setUpNewTrick();
     CCardPack getActivePlayerValidTurns();
-    CScore playGameRecursive();
+    CPath playGameRecursive();
 //@}
     
 ///@name Cards Left related functions

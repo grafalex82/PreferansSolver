@@ -216,7 +216,7 @@ CCardPack CGameState::getActivePlayerValidTurns()
     return validTurns;
 }
 
-CScore CGameState::playGameRecursive()
+CPath CGameState::playGameRecursive()
 {
 //    std::cout << "Current state: " << *this << std::endl;
 
@@ -233,9 +233,10 @@ CScore CGameState::playGameRecursive()
         iLeafsCount++;
         if(iLeafsCount % 10000 == 0)
             std::cout << "Reached end of the path " << iLeafsCount << ": " << currentPath << "   " << m_score << std::endl;
-        return m_score;
+        return CPath(m_score);
     }
 
+    CPath path(m_aPlayers[m_iActivePlayer]->getPlayerStrategy());
     for(unsigned int i=0; i<possibleTurns.getCardsCount(); i++)
     {
         Card card = possibleTurns.getCard(i);
@@ -251,11 +252,13 @@ CScore CGameState::playGameRecursive()
         // Make a copy of current state, and play the turn recursively
         CGameState newState(*this);
         newState.makeTurn(card);
-        newState.playGameRecursive();
+        CPath subPath = newState.playGameRecursive();
+
+        // Search for the best subpath
+        path.addSubPath(card, subPath);
 
         currentPath = currentPathBackup;
     }
 
-    // TODO: return the best score here
-    return m_score;
+    return path;
 }
