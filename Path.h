@@ -18,19 +18,13 @@
  * This class is also indended for calculation the optimal path according to player's strategy,
  * and also it represents a result of game subtree solve.
  *
- * The class basically consists of 2 main parts:
+ * The class basically consists of 2 main items:
  * - path (sequence of turns) that leads from the root of subtree, to a leaf state
  * - a score in that leaf state.
  * .
  *
  * While Path object can store any sequence of turns, this class helps searching a single optimal
  * path of the game.
- *
- * The class can work in 2 different (mutual exclusive modes), each has a set of functions. One
- * represents a leaf states with a trivial subpath. These object has only score value. Other mode
- * is to calculate an optimal path having number of subpath objects as inputs. The reason that 2
- * different modes are handled by the same class is to have a single interface for \a
- * CGameState::playGameRecursive() that may return an object of one of these 2 types.
  */
 class CPath
 {
@@ -38,13 +32,22 @@ public:
     /**
      * @brief Create a leaf (trivial) path object
      *
-     * This constructor creates an empty path object, but stores the resulting score.
+     * This constructor creates a path object with empty path, but stores the resulting score.
      *
      * @param score - score value for the leaf of the states tree
      */
     CPath(const CScore & score);
 
-
+    /**
+     * @brief Create a intermediate path object
+     *
+     * This constructor creates a path object supposed to be a intermediate point
+     * in the resulting tree. The object is initialized with a player's strategy, so that
+     * the class will participate in optimal turn calculation. This is supposed to work
+     * in conjuction with \a addSubPath() method.
+     *
+     * @param strategy - current player's strategy
+     */
     CPath(PlayerStrategy strategy);
 
     /**
@@ -59,6 +62,39 @@ public:
     {
         return m_score;
     }
+
+    /**
+     * @brief Return an optimal path string
+     *
+     * This method prints the calculated path to a string
+     *
+     * @return resulting (optimal) path string
+     */
+    std::string getOptimalPath() const;
+
+    /**
+     * @brief Process a possible subpath
+     *
+     * This method processes a given subpath, and according to its score and player's
+     * strategy selects the optimal one
+     *
+     * @param card      - card to play
+     * @param subpath   - a subpath associated with played card
+     */
+    void addSubPath(Card card, const CPath & subpath);
+
+protected:
+    /**
+     * @brief Save a given subpath as optimal one
+     *
+     * This is a helper method that just stores given subpath and its score as optimal
+     * solution. This method is also responsible for combining subpath with a card resulting
+     * little longer path.
+     *
+     * @param card      - card to play
+     * @param subpath   - a subpath associated with played card
+     */
+    void storeOptimalPath(Card card, const CPath & subpath);
 
 protected:
     /// An optimal score for this path
