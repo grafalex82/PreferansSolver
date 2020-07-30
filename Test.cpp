@@ -316,6 +316,7 @@ TEST_CASE("CScore player strategies", "Score")
 TEST_CASE("Player's valid turns", "Player")
 {
     CPlayer player("7^ 8^ 9+ 1+ J$ Q$", PS_P1MAX);
+    REQUIRE(player.getPlayerStrategy() == PS_P1MAX);
 
     SECTION("No trick suit specified (all turns are valid)")
     {

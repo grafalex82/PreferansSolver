@@ -178,6 +178,16 @@ public:
     {
         return m_cardPack;
     }
+
+    /**
+     * @brief Retrieve the player's strategy
+     *
+     * @return player strategy
+     */
+    inline PlayerStrategy getPlayerStrategy() const
+    {
+        return m_eStrategy;
+    }
 //@}
         
 protected:
