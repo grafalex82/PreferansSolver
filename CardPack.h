@@ -11,6 +11,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
+#include <algorithm>
 
 #include "CardDefs.h"
 
@@ -22,13 +23,10 @@ const unsigned int MAX_CARDS = 4*8;
  *
  * This class represents the pack of cards. It handles the array of cards.
  *
- * This class allows to handle the cards pack, so it can be only initialized with an array of cards.
+ * This class allows to handle the cards pack. It can be only initialized with an array of cards.
  * The only operation is allowed to modify the card pack is remove specified card from a pack. Thus
  * there is no empty constructor for this class.
  *
- * Class handles the cards array as simple array of fixed size to provide maximum performace.
- *
- * @note This class is designed to provide maximum performace, so no STL is used.
  * @note It is assumed, that handled array of cards is always sorted.
  */
 class CCardPack
@@ -38,9 +36,10 @@ private:
     /**
      * @brief Empty Cards Pack constructor
      *
-     * This constructor will create an empty cards pack
+     * This constructor will create an empty cards pack. It is not supposed for user
+     * to create empty card packs, so this constructor is in private section
      */
-    CCardPack();
+    CCardPack() = default;
 
 public:    
     /**
@@ -60,13 +59,14 @@ public:
      *
      * @param rPack - the source cards pack
      */
-    CCardPack(const CCardPack & rPack);
+    CCardPack(const CCardPack & rPack) = default;
+    CCardPack(CCardPack && rPack) = default;
     /**
      * @brief Cards Pack destructor
      *
      * This destructor will free handled array.
      */
-    ~CCardPack();
+    ~CCardPack() = default;
 
 ///@name Operators
 //@{
@@ -80,8 +80,9 @@ public:
      *
      * @return the copied cards pack
      */    
-    CCardPack & operator=(const CCardPack & rPack);
-    
+    CCardPack & operator=(const CCardPack & rPack) = default;
+    CCardPack & operator=(CCardPack && rPack) = default;
+
     /**
      * @brief less than operator
      *
@@ -96,20 +97,7 @@ public:
      */
     inline bool operator<(const CCardPack & rPack) const
     {
-        if(m_iCardsCount < rPack.m_iCardsCount)
-            return true;
-        if(rPack.m_iCardsCount < m_iCardsCount)
-            return false;
-    
-        for(unsigned int i=0; i<m_iCardsCount; i++)
-        {
-            if(m_aCards[i] < rPack.m_aCards[i])
-                return true;
-            if(rPack.m_aCards[i] < m_aCards[i])
-                return false;
-        }
-        
-        return false;
+        return m_vCards < rPack.m_vCards;
     }
 
     /**
@@ -123,9 +111,9 @@ public:
      */
     inline bool operator==(const CCardPack & rPack) const
     {
-        return m_iCardsCount == rPack.m_iCardsCount &&
-                memcmp(m_aCards, rPack.m_aCards, m_iCardsCount) == 0;
+        return m_vCards == rPack.m_vCards;
     }
+
     /// Serialization operator. It stores the cards pack as a string (each card separated by space) to the stream.
     friend inline std::ostream& operator<< (std::ostream& out, const CCardPack & cardPack)
     {
@@ -170,9 +158,9 @@ public:
      *
      * @return number of cards
      */
-    inline unsigned int getCardsCount() const
+    inline size_t getCardsCount() const
     {
-        return m_iCardsCount;
+        return m_vCards.size();
     }
     
     /**
@@ -186,9 +174,9 @@ public:
      *
      * @return The card value
      */
-    inline Card getCard(unsigned int idx) const
+    inline Card getCard(size_t idx) const
     {
-        return m_aCards[idx];
+        return m_vCards[idx];
     }
 
     /**
@@ -200,12 +188,7 @@ public:
      */
     inline bool hasCard(Card card) const
     {
-        for(unsigned int i=0; i<m_iCardsCount; i++)
-        {
-            if(m_aCards[i] == card)
-                return true;
-        }
-        return false;
+        return std::binary_search(m_vCards.begin(), m_vCards.end(), card);
     }
 
     /**
@@ -222,12 +205,10 @@ public:
             return false;
 
         // Just search for the requested suit
-        for(unsigned int i=0; i<m_iCardsCount; i++)
-        {
-            if(getSuit(m_aCards[i]) == suit)
-                return true;
-        }
-        return false;
+        return std::find_if(m_vCards.begin(),
+                            m_vCards.end(),
+                            [suit] (const Card card) { return getSuit(card) == suit; })
+                != m_vCards.end();
     }
 
 
@@ -286,9 +267,7 @@ public:
 
 protected:
     /// The cards array
-    Card m_aCards[MAX_CARDS];
-    /// Current number of cards in handled array
-    unsigned int m_iCardsCount;
+    std::vector<Card> m_vCards;
 };
 
 #endif // CARD_PACK_H

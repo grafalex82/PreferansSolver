@@ -47,14 +47,13 @@ int main()
 
     std::cout << game << std::endl;
 
-#if 0
+#if 1
     std::cout << "Searching a solution for Kovalevska's miser..." << std::endl;
     searchSolution(game);
-#endif
-
+#else
     //const char * solution = "K$ 9$ A$ 1@ J@ 9@ Q$ 8$ A^ J$ 7$ K^ 1$ 1^ Q+ Q^ 9^ J+ J^ 8^ 1+ 7+ 8+ A@ 8@ K@ 7@ Q@ 9+ 7^";
     playPredefinedGame(game, "K$ 9$ A$ 1@ J@ 9@ Q$ 8$ A^ J$ 7$ K^");
     searchSolution(game);
-
+#endif
     return 0;
 }

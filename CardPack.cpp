@@ -2,14 +2,12 @@
 
 #include <algorithm>
 
-CCardPack::CCardPack()
-{
-    m_iCardsCount = 0;
-}
+//CCardPack::CCardPack()
+//{
+//}
 
 CCardPack::CCardPack(const char * cards)
 {
-    m_iCardsCount = 0;
     while(*cards != '\0')
     {
         // Skip white spaces
@@ -17,47 +15,44 @@ CCardPack::CCardPack(const char * cards)
             cards++;
 
         // parse the card
-        m_aCards[m_iCardsCount++] = parseCard(cards);
+        m_vCards.emplace_back(parseCard(cards));
         cards += 2;
     }
 
     // Sort cards, just in case
-    std::sort(m_aCards, m_aCards + m_iCardsCount * sizeof(Card));
+    std::sort(m_vCards.begin(), m_vCards.end());
 }
 
-CCardPack::CCardPack(const CCardPack & rPack)
-{
-    m_iCardsCount = rPack.m_iCardsCount;
-    memcpy(m_aCards, rPack.m_aCards, m_iCardsCount * sizeof(Card));
-}
+//CCardPack::CCardPack(const CCardPack & rPack)
+//{
+//    // TODO: Make it default
+//    m_vCards = rPack.m_vCards;
+//}
 
-CCardPack::~CCardPack()
-{
-}
+//CCardPack::~CCardPack()
+//{
+//    // TODO: Make it default
+
+//}
     
-CCardPack & CCardPack::operator=(const CCardPack & rPack)
-{
-    if(this != &rPack)
-    {
-        m_iCardsCount = rPack.m_iCardsCount;
-        memcpy(m_aCards, rPack.m_aCards, m_iCardsCount * sizeof(Card));
-    }	
+//CCardPack & CCardPack::operator=(const CCardPack & rPack)
+//{
+//    // TODO: Make it default
+//    if(this != &rPack)
+//    {
+//        std::vector<Card> tmp(rPack.m_vCards);
+//        std::swap(m_vCards, tmp);
+//    }
     
-    return *this;
-}
+//    return *this;
+//}
 
 std::string CCardPack::getPackStr() const
 {
     std::string sRes;
-
-    for(unsigned int i=0; i<m_iCardsCount; i++)
+    for(Card card : m_vCards)
     {
-        char temp[4] = "   ";
-    
-        temp[1] = getCardValueSymb(getCardValue(m_aCards[i]));
-        temp[2] = getSuitSymb(getSuit(m_aCards[i]));
-	
-        sRes.append(std::string(temp));
+        sRes.append(std::string(" ") + getCardStr(card));
     }
     
     return sRes;
@@ -65,8 +60,7 @@ std::string CCardPack::getPackStr() const
 
 void CCardPack::removeCard(Card card)
 {
-    std::remove(m_aCards, m_aCards + m_iCardsCount, card);
-    m_iCardsCount--;
+    m_vCards.erase(std::find(m_vCards.begin(), m_vCards.end(), card));
 }
 
 bool CCardPack::areCardsEquivalent(Card left, Card right) const
@@ -76,12 +70,13 @@ bool CCardPack::areCardsEquivalent(Card left, Card right) const
         return false;
 
     // Check that provided cards are located next to each other
-    for(unsigned int i=0; i < m_iCardsCount - 1; i++)
+    // TODO: Rewrite this with std::binary search
+    for(size_t i=0; i < m_vCards.size() - 1; i++)
     {
-        if(m_aCards[i] != left && m_aCards[i] != right)
+        if(m_vCards[i] != left && m_vCards[i] != right)
             continue;
         
-        if(m_aCards[i+1] == right || m_aCards[i+1] == left)
+        if(m_vCards[i+1] == right || m_vCards[i+1] == left)
             return true;
 
         return false;
@@ -93,7 +88,7 @@ bool CCardPack::areCardsEquivalent(Card left, Card right) const
 void CCardPack::filterOutEquivalentCards(const CCardPack & ref)
 {
     // if the pack contains only 1 card (or 0) - nothing to do with filtering
-    if(m_iCardsCount <= 1)
+    if(m_vCards.size() <= 1)
         return;
 
     unsigned int idx=0;
@@ -102,66 +97,55 @@ void CCardPack::filterOutEquivalentCards(const CCardPack & ref)
     do
     {
         // Get cards to compare
-        Card card = m_aCards[idx++];
-        Card nextCard = m_aCards[idx];
+        Card card = m_vCards[idx++];
+        Card nextCard = m_vCards[idx];
 
         // Search for the card in reference deck
-        while(ref.m_aCards[refIdx] != card)
+        while(ref.m_vCards[refIdx] != card)
             refIdx++;
 
         // Skip equivalent cards
         if(getSuit(card) == getSuit(nextCard) &&
-           card == ref.m_aCards[refIdx] &&
-           nextCard == ref.m_aCards[refIdx + 1])
+           card == ref.m_vCards[refIdx] &&
+           nextCard == ref.m_vCards[refIdx + 1])
             continue;
 
         // Store non-equivalent cards
-        m_aCards[targetIdx++] = card;
+        m_vCards[targetIdx++] = card;
     }
-    while(idx < m_iCardsCount - 1);
+    while(idx < m_vCards.size() - 1);
 
     // Fill the remaining card
-    m_aCards[targetIdx] = m_aCards[idx];
-    m_iCardsCount = targetIdx + 1;
+    m_vCards[targetIdx] = m_vCards[idx];
+    m_vCards.resize(targetIdx + 1);
 }
 
 CCardPack CCardPack::operator +(const CCardPack &rPack)
 {
-    if(m_iCardsCount + rPack.m_iCardsCount > MAX_CARDS)
-        throw "CCardPack::operator+(): Too many cards to combine";
-
-    // Make a copy
+    // Make a copy first
     CCardPack res(*this);
 
-    // Concatenate other pack's array
-    std::copy(rPack.m_aCards, rPack.m_aCards + rPack.m_iCardsCount, res.m_aCards + res.m_iCardsCount);
-    res.m_iCardsCount += rPack.m_iCardsCount;
+    // Concatenate with other pack's array
+    std::copy(rPack.m_vCards.begin(), rPack.m_vCards.end(), std::back_inserter(res.m_vCards));
 
-    // Finally sort the result
-    std::sort(res.m_aCards, res.m_aCards + res.m_iCardsCount);
+    // And sort the result
+    std::sort(res.m_vCards.begin(), res.m_vCards.end());
 
     return res;
 }
 
 CCardPack CCardPack::getSubset(CardSuit suit) const
 {
-    CCardPack ret;
-
     // If no suit specified - nothing to return
     if(suit == CS_UNKNOWN)
-        return ret;
+        return CCardPack();
 
-    // Copy cards that match given suit
-    unsigned int j = 0;
-    for(unsigned int i=0; i<m_iCardsCount; i++)
-    {
-        if(getSuit(m_aCards[i]) == suit)
-        {
-            ret.m_aCards[j] = m_aCards[i];
-            j++;
-        }
-    }
+    // Filter out everything but needed suit
+    CCardPack res(*this);
+    auto newEnd = std::remove_if(res.m_vCards.begin(),
+                                 res.m_vCards.end(),
+                                 [suit](const Card card) { return getSuit(card) != suit; });
+    res.m_vCards.erase(newEnd, res.m_vCards.end());
 
-    ret.m_iCardsCount = j;
-    return ret;
+    return res;
 }
