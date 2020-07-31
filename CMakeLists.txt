@@ -21,6 +21,8 @@ SET(SOURCE_FILES
     Player.h
     Score.cpp
     Score.h
+    VisitedStateCache.cpp
+    VisitedStateCache.h
 )
 
 SET(UNIT_TEST_SOURCES

@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "GameState.h"
 #include "Path.h"
+#include "VisitedStateCache.h"
 
 template<class T>
 std::string getObjStr(T obj)
@@ -398,4 +399,50 @@ TEST_CASE("Game path functions", "Game Path")
     REQUIRE(getObjStr(megaPath.getOptimalScore()) == "(3, 2, 1)");
     REQUIRE(megaPath.getOptimalPath() == " 7^ Q+");
     REQUIRE(megaPath.isValid() == true);
+}
+
+TEST_CASE("Visited State Cache", "Visited State Cache")
+{
+    // Create an empty cache
+    CVisitedStateCache cache;
+    REQUIRE(cache.getHitsCount() == 0);
+    REQUIRE(cache.getCacheSize() == 0);
+
+    // Create a few game state objects
+    CPlayer player1("7^ 9+ Q$", PS_P2MIN);
+    CPlayer player2("9^ 7+ K$", PS_P2MAX);
+    CPlayer player3("K^ J+ 7$", PS_P2MIN);
+    CGameState state(player1, player2, player3);
+    state.setScore(CScore(1, 2, 3));
+    CGameState anotherState(player3, player2, player1);
+    state.setScore(CScore(3, 2, 1));
+
+    // Create a path
+    CPath path(CScore(1, 2, 3));
+    CPath anotherPath(CScore(3, 2, 1));
+
+    // Add the state to the cache
+    cache.addVisitedState(state, path);
+    REQUIRE(cache.getCacheSize() == 1);
+
+    // Check the state is there
+    CPath retpath1 = cache.getVisitedState(state);
+    REQUIRE(retpath1.isValid() == true);
+    REQUIRE(getObjStr(retpath1.getOptimalScore()) == "(1, 2, 3)");
+    REQUIRE(cache.getHitsCount() == 1);
+
+    // Check if other state is not yet there
+    CPath retpath2 = cache.getVisitedState(anotherState);
+    REQUIRE(retpath2.isValid() == false);
+    REQUIRE(cache.getCacheSize() == 1);
+
+    // Add another state
+    cache.addVisitedState(anotherState, anotherPath);
+    REQUIRE(cache.getCacheSize() == 2);
+
+    // Check if the new state is now there
+    CPath retpath3 = cache.getVisitedState(anotherState);
+    REQUIRE(retpath3.isValid() == true);
+    REQUIRE(cache.getCacheSize() == 2);
+    REQUIRE(cache.getHitsCount() == 2);
 }
