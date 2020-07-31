@@ -24,11 +24,24 @@
  * .
  *
  * While Path object can store any sequence of turns, this class helps searching a single optimal
- * path of the game.
+ * path of the game. For this purposes it implements filtering passed sub path objects with
+ * player's criteria, and stores the most optimal one.
+ *
+ * Objects of CPath participate in recursive traversing of the states tree. Sometimes it is needed
+ * to indicate an invalid path. In order not to complicate other interfaces, this class has \a
+ * m_bValid field indicating that object really contains useful data, or is invalid.
  */
 class CPath
 {
 public:
+    /**
+     * @brief Create an empty (invalid) path object
+     *
+     * This constructor creates an empty and invalid path object. It is needed to indicate
+     * an invalid path, nothing else. Invalid path objects should not be used in calculations.
+     */
+    CPath();
+
     /**
      * @brief Create a leaf (trivial) path object
      *
@@ -49,6 +62,16 @@ public:
      * @param strategy - current player's strategy
      */
     CPath(PlayerStrategy strategy);
+
+    /**
+     * @brief return Path validity flag
+     *
+     * @return \a true if object is valid (has a valid score and/or path), \a false otherwise
+     */
+    bool isValid() const
+    {
+        return m_bValid;
+    }
 
     /**
      * @brief Return an optimal path calculated by the object
@@ -106,6 +129,8 @@ protected:
     /// A Player's strategy
     PlayerStrategy m_strategy;
 
+    /// A Flag indicating this is a valid object
+    bool m_bValid;
 };
 
 #endif // PATH_H

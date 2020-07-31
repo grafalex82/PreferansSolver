@@ -1,14 +1,24 @@
 #include "Path.h"
 
+CPath::CPath()
+    : m_score(CScore())
+    , m_strategy(PS_P1MIN)
+    , m_bValid(false)   // Invalid by intention of this constructor
+{
+
+}
+
 CPath::CPath(const CScore & score)
     : m_score(score)
     , m_strategy(PS_P1MIN)
+    , m_bValid(true)    // Valid, as object has a score
 {
 
 }
 
 CPath::CPath(PlayerStrategy strategy)
     : m_strategy(strategy)
+    , m_bValid(false)   // Invalid until one or more paths added
 {
 
 }
@@ -37,6 +47,9 @@ void CPath::storeOptimalPath(Card card, const CPath & subpath)
     // Optimal path consists of the subpath with additional card
     m_path = subpath.m_path;
     m_path.push_back(card);
+
+    // Now we have at least one path stored, so the object becomes valid
+    m_bValid = true;
 }
 
 void CPath::addSubPath(Card card, const CPath & subpath)

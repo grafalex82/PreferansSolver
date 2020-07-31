@@ -363,10 +363,14 @@ TEST_CASE("Game State", "Game State")
 
 TEST_CASE("Game path functions", "Game Path")
 {
+    CPath invalidPath;
+    REQUIRE(invalidPath.isValid() == false);
+
     // create a leaf path object (one that does not really have a path, but have a score)
     CPath path1(CScore(1, 2, 3));
     REQUIRE(getObjStr(path1.getOptimalScore()) == "(1, 2, 3)");
     REQUIRE(path1.getOptimalPath() == "");
+    REQUIRE(path1.isValid() == true);
 
     // Create a few more leaf objects
     CPath path2(CScore(3, 2, 1));
@@ -375,6 +379,7 @@ TEST_CASE("Game path functions", "Game Path")
     // Create a parent path object
     CPath parentPath(PS_P1MAX);
     REQUIRE(getObjStr(parentPath.getOptimalScore()) == "(0, 0, 0)"); // Default score
+    REQUIRE(parentPath.isValid() == false);
 
     // Add a few subpaths to the parent path and check the processing
     parentPath.addSubPath(MAKE_CARD(CS_SPIDES, CV_KING), path1);
@@ -384,6 +389,7 @@ TEST_CASE("Game path functions", "Game Path")
     // path2 should win according to P1MAX strategy
     REQUIRE(getObjStr(parentPath.getOptimalScore()) == "(3, 2, 1)");
     REQUIRE(parentPath.getOptimalPath() == " Q+");
+    REQUIRE(parentPath.isValid() == true);
 
     // Prepare a bigger path object
     CPath megaPath(PS_P2MIN);
@@ -391,4 +397,5 @@ TEST_CASE("Game path functions", "Game Path")
     megaPath.addSubPath(MAKE_CARD(CS_SPIDES, CV_7), parentPath);
     REQUIRE(getObjStr(megaPath.getOptimalScore()) == "(3, 2, 1)");
     REQUIRE(megaPath.getOptimalPath() == " 7^ Q+");
+    REQUIRE(megaPath.isValid() == true);
 }
