@@ -1,4 +1,5 @@
 #include "GameState.h"
+#include "VisitedStateCache.h"
 
 #include <map>
 #include <sstream>
@@ -28,7 +29,9 @@ CGameState::CGameState(const CPlayer & p1, const CPlayer & p2, const CPlayer & p
     m_currentSuit = CS_UNKNOWN;
     m_iActivePlayer = 0;
     
-    m_iCardsOnTableCount = 0;    
+    m_iCardsOnTableCount = 0;
+
+    m_pCache = nullptr;
 }
 
 CGameState::CGameState(const CGameState & rGame)
@@ -47,6 +50,8 @@ CGameState::CGameState(const CGameState & rGame)
     
     m_iCardsOnTableCount = rGame.m_iCardsOnTableCount;
     memcpy(m_aCardsOnTable, rGame.m_aCardsOnTable, 3*sizeof(Card));
+
+    m_pCache = rGame.m_pCache;
 }
 
 CGameState::~CGameState()
@@ -122,8 +127,8 @@ bool CGameState::operator<(const CGameState & rGame) const
 	
     if(m_currentSuit < rGame.m_currentSuit)
         return true;
-//    if(rGame.m_currentSuit < m_currentSuit)
-//	return false;
+    if(rGame.m_currentSuit < m_currentSuit)
+        return false;
 
     return false;
 }
@@ -156,7 +161,7 @@ CScore CGameState::guessTurn(Card card)
         giHits++;
         return it->second;
     }
-    
+
     CScore ret;
     if(m_aPlayers[m_iActivePlayer]->hasCards())
     {
@@ -225,6 +230,14 @@ CPath CGameState::playGameRecursive()
     //unsigned int thisStateIndex = iStateCounter++;
     //std::cout << "State Counter: " << thisStateIndex << std::endl;
 
+    // Check if this state was already visited
+    if(m_pCache)
+    {
+        CPath cachedPath = m_pCache->getVisitedState(*this);
+        if(cachedPath.isValid())
+            return cachedPath;
+    }
+
     // Cleanup and prepare for the new trick
     if(m_iCardsOnTableCount == 0)
         setUpCardsLeft();
@@ -266,6 +279,10 @@ CPath CGameState::playGameRecursive()
 
 //        std::cout << "State " << thisStateIndex << " Card " << card << " " << subPath.getOptimalScore() << std::endl;
     }
+
+    // Store found solution in the visited states cache
+    if(m_pCache)
+        m_pCache->addVisitedState(*this, path);
 
     return path;
 }

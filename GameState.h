@@ -14,6 +14,8 @@
 #include "CardPack.h"
 #include "Path.h"
 
+class CVisitedStateCache;
+
 /**
  * @brief The Game State
  *
@@ -100,6 +102,19 @@ public:
     }
 
     /**
+     * @brief Set visited states cache to use
+     *
+     * This method sets active visitated states cache object, or resets to nullptr.
+     * Note, that game state object does not own the cache, just stores a pointer.
+     *
+     * @param pCache    - pointer to a visited states cache or nullptr if not used
+     */
+    inline void setVisitedStatesCache(CVisitedStateCache * pCache)
+    {
+        m_pCache = pCache;
+    }
+
+    /**
      * @brief Set active player
      *
      * This method is intended for specifying the active player. For instance it can be used for games
@@ -126,8 +141,6 @@ public:
     {
         return m_iActivePlayer;
     }
-
-
     
     /**
      * @brief Get trum suit
@@ -294,6 +307,9 @@ protected:
     /// Flag indicates that this current object owns m_pCardsLeft
     /// (otherwise it is just a reference to other's state card pack)
     bool m_bOwnsCardsLeft;
+
+    /// Visited states cache or nullptr if not used. Game state object does not own the cache.
+    CVisitedStateCache * m_pCache;
 };
 
 #endif //GAME_STATE_H
