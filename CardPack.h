@@ -16,7 +16,7 @@
 #include "CardDefs.h"
 
 /// Maximum number of cards, that can be handled in one pack. For Marraige is 4 suits of 8 cards.
-const unsigned int MAX_CARDS = 4*8;
+const size_t MAX_CARDS = 4*8;
 
 /**
  * @brief The Cards Pack class
@@ -39,7 +39,7 @@ private:
      * This constructor will create an empty cards pack. It is not supposed for user
      * to create empty card packs, so this constructor is in private section
      */
-    CCardPack() = default;
+    CCardPack();
 
 public:    
     /**

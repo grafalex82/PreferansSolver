@@ -2,12 +2,15 @@
 
 #include <algorithm>
 
-//CCardPack::CCardPack()
-//{
-//}
+CCardPack::CCardPack()
+{
+    m_vCards.reserve(MAX_CARDS);
+}
 
 CCardPack::CCardPack(const char * cards)
 {
+    m_vCards.reserve(MAX_CARDS);
+
     while(*cards != '\0')
     {
         // Skip white spaces
