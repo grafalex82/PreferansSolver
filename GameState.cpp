@@ -4,18 +4,6 @@
 #include <map>
 #include <sstream>
 
-typedef std::map<CGameState, CScore> MapGameToScore;
-typedef MapGameToScore::const_iterator MapGameToScoreCIt;
-typedef MapGameToScore::value_type MapGameToScoreVt;
-
-static MapGameToScore gVisitedStates;
-unsigned int giHits;
-unsigned int giTotal;
-
-std::string currentPath;
-
-unsigned int iLeafsCount = 0;
-
 CGameState::CGameState(const CPlayer & p1, const CPlayer & p2, const CPlayer & p3)
     : m_score()
     , m_pCardsLeft(nullptr)
@@ -36,6 +24,7 @@ CGameState::CGameState(const CPlayer & p1, const CPlayer & p2, const CPlayer & p
 
 CGameState::CGameState(const CGameState & rGame)
     : m_score(rGame.m_score)
+
     // The copy will have the same reference to cards left pack, but it will not own it
     , m_pCardsLeft(rGame.m_pCardsLeft)
     , m_bOwnsCardsLeft(false)
@@ -145,36 +134,6 @@ std::ostream& operator<< (std::ostream& out, const CGameState & game)
     return out;
 }
 
-Card CGameState::getOptimalTurn(CScore & score)
-{
-    return m_aPlayers[m_iActivePlayer]->getOptimalTurn(this, score, (m_iCardsOnTableCount == 0));
-}
-
-CScore CGameState::guessTurn(Card card)
-{
-    makeTurn(card);
-
-    giTotal++;
-    MapGameToScoreCIt it = gVisitedStates.find(*this);
-    if(it != gVisitedStates.end())
-    {
-        giHits++;
-        return it->second;
-    }
-
-    CScore ret;
-    if(m_aPlayers[m_iActivePlayer]->hasCards())
-    {
-        getOptimalTurn(ret);
-    }
-    else
-        ret = m_score;
-
-    gVisitedStates.insert(MapGameToScoreVt(*this, ret));
-
-    return ret;
-}
-
 void CGameState::makeTurn(Card card)
 {
     // Update players and table information
@@ -206,7 +165,6 @@ void CGameState::makeTurn(Card card)
     }
 }
 
-
 void CGameState::setUpNewTrick()
 {
     setUpCardsLeft();
@@ -224,12 +182,6 @@ CCardPack CGameState::getActivePlayerValidTurns()
 
 CPath CGameState::playGameRecursive()
 {
-    //std::cout << "Current state: " << *this << std::endl;
-
-    //static unsigned int iStateCounter = 0;
-    //unsigned int thisStateIndex = iStateCounter++;
-    //std::cout << "State Counter: " << thisStateIndex << std::endl;
-
     // Check if this state was already visited
     if(m_pCache)
     {
@@ -243,29 +195,18 @@ CPath CGameState::playGameRecursive()
         setUpCardsLeft();
 
     CCardPack possibleTurns = getActivePlayerValidTurns();
-    //std::cout << "Player's valid turns are: " << possibleTurns << std::endl;
 
     // end of recursion, if no turns can be done
     if(possibleTurns.getCardsCount() == 0)
     {
-        iLeafsCount++;
-        if(iLeafsCount % 10000 == 0)
-            std::cout << "Reached end of the path " << iLeafsCount << ": " << currentPath << "   " << m_score << std::endl;
         return CPath(m_score);
     }
 
+    // Process all valid turns and select the most optimal one
     CPath path(m_aPlayers[m_iActivePlayer]->getPlayerStrategy());
     for(unsigned int i=0; i<possibleTurns.getCardsCount(); i++)
     {
         Card card = possibleTurns.getCard(i);
-
-        //std::cout << "Current Path: " << currentPath << std::endl;
-        //std::cout << "Player " << m_iActivePlayer << " plays " << card << std::endl;
-
-        std::string currentPathBackup = currentPath;
-        std::stringstream str;
-        str << card;
-        currentPath += str.str();
 
         // Make a copy of current state, and play the turn recursively
         CGameState newState(*this);
@@ -274,10 +215,6 @@ CPath CGameState::playGameRecursive()
 
         // Search for the best subpath
         path.addSubPath(card, subPath);
-
-        currentPath = currentPathBackup;
-
-//        std::cout << "State " << thisStateIndex << " Card " << card << " " << subPath.getOptimalScore() << std::endl;
     }
 
     // Store found solution in the visited states cache

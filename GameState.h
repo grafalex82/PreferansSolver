@@ -20,7 +20,8 @@ class CVisitedStateCache;
  * @brief The Game State
  *
  * This class represents the game state. This is a data holder class that contains information
- * about player's and their cards, current score, etc.
+ * about player's and their cards, current score, etc. Additionally it implements game logic,
+ * as well as calculating optimal turn.
  */
 class CGameState
 {
@@ -33,7 +34,7 @@ public:
      * It will initialize internal data as follows:
      * - Players will be initialized as specified
      * - trump suit is unknown
-     * - active player is player 1
+     * - active player is player 0
      * - cards on table (cards in current trick) - empty
      * - score - zero for all players
      * .
@@ -71,8 +72,9 @@ public:
      *
      * This operator is intended for comparing two game states.
      *
-     * @note This operator is needed to handle the game states in visited states set. Actually it is not a 
-     * good idea and most time is wasted in this operator, but it allows to decrease number of states to visit.
+     * @note This operator is needed to handle the game states in visited states cache.
+     * Actually it is not a good idea and most time is wasted in this operator, but it
+     * allows to decrease number of processing states significantly.
      *
      * @param rGame - game state to compare with current game state
      *
@@ -82,7 +84,7 @@ public:
 
 private:    
     /// The blocked assignment operator
-    CGameState& operator=(const CGameState & rGame);
+    CGameState& operator=(const CGameState & rGame) = delete;
 //@}
 
 ///@name Attributes operations
@@ -192,63 +194,24 @@ public:
 ///@name Turns related
 //@{    
 public:
-    /**
-     * @brief Get optimal turn for active player
-     *
-     * This method is intended for checking what turn of active player is optimal.
-     * Actually this method will redirect execution to the active player's CPlayer::getOptimalTurn() method.
-     *
-     * @param score - reference to a score object which will be filled with score, that is possible is all players
-     * will make optimal turns.
-     *
-     * @return the card with optimal turn (for active player)
-     */
-    Card getOptimalTurn(CScore & score);
-    
-    /**
-     * @brief Guess the turn
-     *
-     * This method is intended for guessing the rest of game, if current player plays the specified card.
-     * As result the score will be returned - it indicates final score, if all players will play with optimal strategy.
-     * 
-     * Algorithm description:
-     * - Play the specified card (using the CGameState::makeTurn() method). Game state will be changed:
-     *   - new active player
-     *   - trick handled
-     *   - score updated
-     * - Check if new game state is already visited. If visited - return the saved score value
-     * - Retrieve optimal score for the rest of game
-     * - Save the state in the list of visited states.
-     * .
-     *
-     * @param card - card to guess
-     *
-     * @return score of the game, after active player plays specified card and all players begin to play
-     * with optimal strategy.
-     */
-    CScore guessTurn(Card card);
     
     /**
      * @brief Make the turn
      *
-     * This method performs active player turn with specified card. This method put the specified card 
-     * on the table. If trick is over, method will update game score.
+     * This method performs active player's turn with specified card. This method actually
+     * implements Preferans logic.
      *
      * Algorithm description:
-     * - Remove card from player's card
+     * - Remove card from player's card pack
      * - Put card on the table
-     * - new active player is next player
-     * - If this a first card in trick
-     *   - Current suit is a suit of this card
-     *   .
+     * - If this a first card in trick - current suit is set to suit of the played card
+     * - pass the turn to the new active player
      * - If this is last card in trick
      *   - Calculate the trick winner
      *   - increase score of winner player
      *   - Prepare for new trick:
-     *     - Remove cards of the trick from list of all cards in game
      *     - Clear the list of cards on the table
      *     - Reset current suit
-     *     - Active player is a player, that wins the trick
      *     .
      *   .
      * .
@@ -257,9 +220,29 @@ public:
      */
     void makeTurn(Card card);
 
-    void setUpNewTrick();
-    CCardPack getActivePlayerValidTurns();
     CPath playGameRecursive();
+
+protected:
+    /**
+     * @brief Prepare for the new trick
+     *
+     * This is a helper method that performs preparation for the new trick round when
+     * working in recursive mode:
+     * - Re-calculate cards left list (need to do this before trick begins,
+     *   and this list remains valid until the end of the trick)
+     * - Reset current suit
+     * .
+     */
+    void setUpNewTrick();
+
+    /**
+     * @brief Prepare a list of valid turns
+     *
+     * When working in a recursive traversing mode this method is responsible for
+     * calculating the list of valid turns for the active player. This method also filters
+     * out equial turns in order to optimize processing.
+     */
+    CCardPack getActivePlayerValidTurns();
 //@}
     
 ///@name Cards Left related functions

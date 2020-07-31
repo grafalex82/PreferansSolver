@@ -1,5 +1,5 @@
-#ifndef _PLAYER_H_
-#define _PLAYER_H_
+#ifndef PLAYER_H
+#define PLAYER_H
 
 /**
  * @file
@@ -19,8 +19,6 @@ class CGameState;
  *
  * This class represents the single player in the game.
  * It encapsulates all functionality connected with the player: player cards, player turns, etc.
- *
- * @todo Make decesion what to do with statistic gathering, progress counting, etc...
  */
 class CPlayer
 {
@@ -34,6 +32,7 @@ public:
      * @param eStrategy - player's strategy
      */
     CPlayer(const CCardPack & cardPack, PlayerStrategy eStrategy);
+
     /**
      * @brief Player object copy constructor
      *
@@ -42,6 +41,7 @@ public:
      * @param rPlayer - player to copy
      */
     CPlayer(const CPlayer & rPlayer);
+
     /**
      * @brief Player object destructor
      *
@@ -93,39 +93,13 @@ public:
 //@{
 public:
     /**
-     * @brief Get the optimal turn
-     *
-     * This method is intended for calculating the optimal turn for the specified game state.
-     * Method will return the optimal card (card that the best for user in current game state according to
-     * player's strategy) and also the optimal game score (score, that is possible if all players will
-     * play with optimal turns).
-     *
-     * Algorithm description:
-     * - Prepare the list of possible turns:
-     *   - Choose cards of current suit (if it is not the first card in trick)
-     *   - If no cards found on previous step, choose cards of trump suit (if it is not the first card in trick)
-     *   - If no cards found on previous step, all player's cards considered as possible for turn.
-     *   - Remove equivalent cards
-     *   .
-     * - For each card in list guess the game in case of player plays the card
-     * - The best score (according to the player strategy) defines the optimal card
-     * .
-     *
-     * @param pGame         - current game state
-     * @param score         - reference to a score object, which will be filled with optimal game score
-     * @param bFirstHand    - flag indicates, that player is a first player in current trick
-     *
-     * @return The optimal card.
-     */
-    Card getOptimalTurn(CGameState * pGame, CScore & score, bool bFirstHand);
-
-    /**
      * @brief Return a list of valid turns for a particular game situation
      *
      * This method is intended for calculating a list of valid turns for a particular
      * game situation, taking into account current suit (if defined), and trump (if specified)
      *
      * Method will filter player's card pack according to the following criteria:
+     * - If no trick suit specified the player is allowed to play any card
      * - If trick suit is specified - result will include same suit only
      * - If trick suit is specified, but the player does not have this suit - the algorithm
      *   will return trumps
@@ -197,4 +171,4 @@ protected:
     PlayerStrategy m_eStrategy;
 };
 
-#endif //_PLAYER_H_
+#endif //PLAYER_H
