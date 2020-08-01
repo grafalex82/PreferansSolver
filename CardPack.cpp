@@ -1,6 +1,7 @@
 #include "CardPack.h"
 
 #include <algorithm>
+#include <random>
 
 CCardPack::CCardPack()
 {
@@ -61,6 +62,26 @@ std::string CCardPack::getPackStr() const
     }
     
     return sRes;
+}
+
+CCardPack CCardPack::extractRandomCards(unsigned int size)
+{
+    // Shuffle current card pack
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::shuffle(m_aCards, m_aCards + m_iCardsCount, g);
+
+    // Extract selected number of cards to a new card pack
+    CCardPack newPack;
+    std::copy(m_aCards + m_iCardsCount - size, m_aCards + m_iCardsCount, newPack.m_aCards);
+    newPack.m_iCardsCount = size;
+    m_iCardsCount -= size;
+
+    // Sort both packs
+    std::sort(m_aCards, m_aCards + m_iCardsCount * sizeof(Card));
+    std::sort(newPack.m_aCards, newPack.m_aCards + size * sizeof(Card));
+
+    return newPack;
 }
 
 void CCardPack::removeCard(Card card)

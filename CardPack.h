@@ -270,6 +270,20 @@ public:
 //@{
 public:
     /**
+     * @brief random split the deck
+     *
+     * This method randomly splits the pack and extract specified number of cards to a new deck.
+     * Extracted cards are removed from current deck
+     *
+     * @note both decks get sorted
+     *
+     * @param size  - number of cards to extract
+     *
+     * @return a new pack containing extracted cards
+     */
+    CCardPack extractRandomCards(unsigned int size);
+
+    /**
      * @brief Remove card
      *
      * This method is intended for removing the specified card from the current cards pack.

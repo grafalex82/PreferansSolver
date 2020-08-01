@@ -205,6 +205,20 @@ TEST_CASE( "Card Pack - filtering", "Card Pack")
     REQUIRE(pack.getSubset(CS_UNKNOWN).getPackStr() == "");
 }
 
+TEST_CASE( "Card Pack - randomization", "Card Pack")
+{
+    // Make a bigger pack, and then split it into 2 packs (1 new, and one existing)
+    CCardPack pack("7^ 8^ 9^ 7+ 8+ 9+ 7$ 8$ 9$ 7@ 8@ 9@");
+    CCardPack subPack = pack.extractRandomCards(5);
+
+    // Check resulting packs sizes
+    REQUIRE(pack.getCardsCount() == 7);
+    REQUIRE(subPack.getCardsCount() == 5);
+
+    // Check that all cards are still there
+    CCardPack combined = pack + subPack;
+    REQUIRE(combined.getPackStr() == " 7^ 8^ 9^ 7+ 8+ 9+ 7$ 8$ 9$ 7@ 8@ 9@");
+}
 
 TEST_CASE( "Card Pack - card equivalence", "Card Pack")
 {
