@@ -164,6 +164,18 @@ CCardPack CCardPack::operator +(const CCardPack &rPack)
     return res;
 }
 
+CCardPack CCardPack::operator -(const CCardPack &rPack)
+{
+    CCardPack res;
+
+    // Concatenate other pack's array
+    auto diffIt = std::set_difference(m_aCards, m_aCards + m_iCardsCount,
+                                     rPack.m_aCards, rPack.m_aCards + rPack.m_iCardsCount,
+                                     res.m_aCards);
+    res.m_iCardsCount = diffIt - res.m_aCards;
+    return res;
+}
+
 CCardPack CCardPack::getSubset(CardSuit suit) const
 {
     CCardPack ret;

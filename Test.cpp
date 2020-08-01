@@ -188,6 +188,10 @@ TEST_CASE( "Card Pack additions/removal", "Card Pack")
     REQUIRE(pack.getPackStr() == " 7^ 8^ 1^ J^ Q^ A^ ??");
     pack.removeCard(UNKNOWN_CARD);
     REQUIRE(pack.getPackStr() == " 7^ 8^ 1^ J^ Q^ A^");
+
+    // Subtract packs
+    CCardPack subPack = CCardPack("7^ 8^ 1^ J^ Q^ A^") - CCardPack("8^ J^ A^");
+    REQUIRE(subPack.getPackStr() == " 7^ 1^ Q^");
 }
 
 TEST_CASE( "Card Pack - filtering", "Card Pack")

@@ -151,6 +151,19 @@ public:
      * @return The combined card pack
      */
     CCardPack operator +(const CCardPack &rPack);
+
+    /**
+     * @brief Subtraction operator
+     *
+     * This operator is intended for removing elements that are present in the reference pack.
+     *
+     * Algorithm assumes, that both card pack are sorted, resulting card pack will be also sorted.
+     *
+     * @param rPack - card pack to be subtracted from current card pack
+     *
+     * @return The pack containing only those elements, that were not present in the reference card pack
+     */
+    CCardPack operator -(const CCardPack &rPack);
 //@}
 
 ///@name Data retrieving operators
