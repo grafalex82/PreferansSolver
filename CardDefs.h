@@ -286,7 +286,7 @@ inline std::string getCardStr(Card card)
  * For example if reference card is 8 spides, no trump suit is defined, so all cards from 9 to ace of spides
  * will be assumed as heigher, all others will be lower.
  *
- * @note this function does not support unknown cards, only exact ones *
+ * @note this function does not support unknown cards, only exact ones
  *
  * @param card  - card to be checked
  * @param ref   - reference card

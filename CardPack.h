@@ -20,16 +20,18 @@ const unsigned int MAX_CARDS = 4*8;
 /**
  * @brief The Cards Pack class
  *
- * This class represents the pack of cards. It handles the array of cards.
+ * This class represents the pack of cards. It handles the array of cards and provides a few
+ * handy functions.
  *
  * This class allows to handle the cards pack, so it can be only initialized with an array of cards.
  * The only operation is allowed to modify the card pack is remove specified card from a pack. Thus
- * there is no empty constructor for this class.
+ * there is no public empty constructor for this class.
  *
  * Class handles the cards array as simple array of fixed size to provide maximum performace.
  *
- * @note This class is designed to provide maximum performace, so no STL is used.
  * @note It is assumed, that handled array of cards is always sorted.
+ * @note The class can handle unknown cards. They are treated as playholders for real cards
+ *       that may be calculated later
  */
 class CCardPack
 {
@@ -126,6 +128,7 @@ public:
         return m_iCardsCount == rPack.m_iCardsCount &&
                 memcmp(m_aCards, rPack.m_aCards, m_iCardsCount) == 0;
     }
+
     /// Serialization operator. It stores the cards pack as a string (each card separated by space) to the stream.
     friend inline std::ostream& operator<< (std::ostream& out, const CCardPack & cardPack)
     {
@@ -230,6 +233,21 @@ public:
         return false;
     }
 
+    /**
+     * @brief Check whether the card pack has any unknown cards
+     *
+     * @return \a true if there are unknown cards in the pack, \a false otherwise
+     */
+    inline bool hasUnknownCards() const
+    {
+        // Just search for unknown cards
+        for(unsigned int i=0; i<m_iCardsCount; i++)
+        {
+            if(m_aCards[i] == UNKNOWN_CARD)
+                return true;
+        }
+        return false;
+    }
 
     /**
      * @brief compare two cards and check their equivalence

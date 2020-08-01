@@ -137,6 +137,7 @@ TEST_CASE( "Card Pack creation and basic operations", "Card Pack")
     // Check card pack creation (Note, cards are shuffled)
     CCardPack pack("9^ 7^ K^ 1^ Q^ J^ 8^ A^");
     REQUIRE(pack.getCardsCount() == 8);
+    REQUIRE(pack.hasUnknownCards() == false);
 
     // Check card pack copying
     CCardPack pack2 = pack;
@@ -161,22 +162,31 @@ TEST_CASE( "Card Pack creation and basic operations", "Card Pack")
     REQUIRE(pack.hasSuit(CS_SPIDES) == true);
     REQUIRE(pack.hasSuit(CS_CLUBS) == false);
     REQUIRE(pack.hasSuit(CS_UNKNOWN) == false);
+
+    // Check a pack with unknown cards
+    CCardPack pack3("9^ ?? K^ ?? Q^ ??");
+    REQUIRE(pack3.hasUnknownCards() == true);
+    REQUIRE(pack3.getPackStr() == " 9^ Q^ K^ ?? ?? ??");
 }
 
 TEST_CASE( "Card Pack additions/removal", "Card Pack")
 {
     // Make 2 non-intersecting card packs
-    CCardPack pack1("7^ 8^ Q^ K^");
-    CCardPack pack2("9^ 1^ J^ A^");
+    CCardPack pack1("7^ 8^ Q^ K^ ??");
+    CCardPack pack2("9^ 1^ J^ A^ ??");
 
     // Add card packs and check the result has all the cards, and it is sorted
     CCardPack pack = pack1 + pack2;
-    REQUIRE(pack.getPackStr() == " 7^ 8^ 9^ 1^ J^ Q^ K^ A^");
+    REQUIRE(pack.getPackStr() == " 7^ 8^ 9^ 1^ J^ Q^ K^ A^ ?? ??");
 
     // Remove cards
     pack.removeCard(MAKE_CARD(CS_SPIDES, CV_9));
-    REQUIRE(pack.getPackStr() == " 7^ 8^ 1^ J^ Q^ K^ A^");
+    REQUIRE(pack.getPackStr() == " 7^ 8^ 1^ J^ Q^ K^ A^ ?? ??");
     pack.removeCard(MAKE_CARD(CS_SPIDES, CV_KING));
+    REQUIRE(pack.getPackStr() == " 7^ 8^ 1^ J^ Q^ A^ ?? ??");
+    pack.removeCard(UNKNOWN_CARD);
+    REQUIRE(pack.getPackStr() == " 7^ 8^ 1^ J^ Q^ A^ ??");
+    pack.removeCard(UNKNOWN_CARD);
     REQUIRE(pack.getPackStr() == " 7^ 8^ 1^ J^ Q^ A^");
 }
 
