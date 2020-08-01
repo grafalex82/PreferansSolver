@@ -141,8 +141,8 @@ void CGameState::makeTurn(Card card)
     m_aCardsOnTable[m_iCardsOnTableCount++] = card;
     m_iActivePlayer = (++m_iActivePlayer) % MAX_PLAYERS;
     
-    // First card on the table defines current trick suit
-    if(m_iCardsOnTableCount == 1)
+    // First card on the table defines current trick suit (if not defined explicitely)
+    if(m_iCardsOnTableCount == 1 && m_currentSuit != CS_UNKNOWN)
         m_currentSuit = getSuit(card);
 
     // 3rd card on the table completes the trick

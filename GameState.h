@@ -182,6 +182,19 @@ public:
     }
 
     /**
+     * @brief Set the base suit of current trick
+     *
+     * This method may be needed to explicitely set a trick suit, for example in case
+     * of pass game
+     *
+     * @param suit  - suit to set for current trick
+     */
+    inline void getCurrentSuit(CardSuit suit)
+    {
+        m_currentSuit = suit;
+    }
+
+    /**
      * @brief Retrieve the list of all cards in game.
      *
      * This method creates a list of cards in the game as a sum of players' cards
