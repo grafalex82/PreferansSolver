@@ -54,6 +54,8 @@ const char SUIT_SYMB_CLUBS = '+';
 const char SUIT_SYMB_DIAMONDS = '$';
 /// Symbol for Hearts suit
 const char SUIT_SYMB_HEARTS = '@';
+/// Symbol for Unknown suit
+const char SUIT_SYMB_UNKNOWN = '?';
 
 /**
  * @brief Retrieve suit symbol
@@ -83,7 +85,7 @@ inline char getSuitSymb(CardSuit suit)
         break;
     }
     
-    throw "getSuitSymb(): Unrecognized suit";
+    return SUIT_SYMB_UNKNOWN;;
 }
 
 /**
@@ -109,6 +111,8 @@ inline CardSuit parseSuitSymb(char c)
         return CS_DIAMONDS;
     case SUIT_SYMB_HEARTS:
         return CS_HEARTS;
+    case SUIT_SYMB_UNKNOWN:
+        return CS_UNKNOWN;
     default:
         break;
     }
@@ -148,7 +152,7 @@ enum CardValue
     /// Value for Ace card
     CV_ACE,
     /// Unknown card value
-    CV_UNKNOWN = 0x0f
+    CV_UNKNOWN
 };
 
 /// The card value mask
@@ -169,7 +173,7 @@ inline CardValue getCardValue(Card card)
 }
 
 /// Symbols for card values
-const char cardValueChars[] = {'2', '3', '4', '5', '6', '7', '8', '9', '1', 'J', 'Q', 'K', 'A'};
+const char cardValueChars[] = {'2', '3', '4', '5', '6', '7', '8', '9', '1', 'J', 'Q', 'K', 'A', '?'};
 
 /**
  * @brief Retrieve the card value symbol
@@ -184,7 +188,7 @@ const char cardValueChars[] = {'2', '3', '4', '5', '6', '7', '8', '9', '1', 'J',
  */
 inline char getCardValueSymb(CardValue v)
 {
-    if(v <= CV_ACE)
+    if(v <= CV_UNKNOWN)
         return cardValueChars[static_cast<size_t>(v)];
     
     throw "getCardValueSymb(): unknown card value";
@@ -214,6 +218,9 @@ inline CardValue parseCardValueSymb(char c)
 /// Macro for making the whole card value from card suit and card value
 #define MAKE_CARD(suit, value) static_cast<Card>((suit&0xf0) | (value & 0x0f))
 
+/// A special value representing an unknown card
+const Card UNKNOWN_CARD = MAKE_CARD(CS_UNKNOWN, CV_UNKNOWN);
+
 /**
  * @brief Card serialization operator
  *
@@ -235,14 +242,21 @@ inline std::ostream& operator<< (std::ostream & out, const Card& card)
  *
  * This function is intended to parse a sequence of 2 chars representing a card
  *
+ * @note if value or suit is unknown whole card is considered as unknown.
+ *
  * @param cardStr - card string to parse
  *
- * @return card object
+ * @return card object, or an unknown card
  */
 inline Card parseCard(const char * cardStr)
 {
     CardValue cv = parseCardValueSymb(cardStr[0]);
     CardSuit cs = parseSuitSymb(cardStr[1]);
+
+    // If suit of value is unknown - whole card is unknown as well
+    if(cv == CV_UNKNOWN || cs == CS_UNKNOWN)
+        return UNKNOWN_CARD;
+
     return MAKE_CARD(cs, cv);
 }
 
@@ -271,6 +285,8 @@ inline std::string getCardStr(Card card)
  *
  * For example if reference card is 8 spides, no trump suit is defined, so all cards from 9 to ace of spides
  * will be assumed as heigher, all others will be lower.
+ *
+ * @note this function does not support unknown cards, only exact ones *
  *
  * @param card  - card to be checked
  * @param ref   - reference card
@@ -316,6 +332,8 @@ inline bool isCardHeigher(Card card, Card ref, CardSuit trump = CS_UNKNOWN)
  * It is expected that card1 was put first, and all other cards are compared to the 1st card.
  * For example, card1 is 7 spides, but other players have neigher spides, no trumps, then
  * 1st player wins.
+ *
+ * @note this function does not support unknown cards, only exact ones
  *
  * @param card1 - card played by 1st player
  * @param card2 - card played by 2nd player

@@ -24,12 +24,14 @@ TEST_CASE( "Card basic functions", "Cards" )
     REQUIRE(getSuitSymb(CS_CLUBS) == '+');
     REQUIRE(getSuitSymb(CS_DIAMONDS) == '$');
     REQUIRE(getSuitSymb(CS_HEARTS) == '@');
+    REQUIRE(getSuitSymb(CS_UNKNOWN) == '?');
 
     // parseSuitSymb()
     REQUIRE(parseSuitSymb('^') == CS_SPIDES);
     REQUIRE(parseSuitSymb('+') == CS_CLUBS);
     REQUIRE(parseSuitSymb('$') == CS_DIAMONDS);
     REQUIRE(parseSuitSymb('@') == CS_HEARTS);
+    REQUIRE(parseSuitSymb('?') == CS_UNKNOWN);
 
     // getCardValueSymb()
     REQUIRE(getCardValueSymb(CV_2) == '2');
@@ -38,6 +40,7 @@ TEST_CASE( "Card basic functions", "Cards" )
     REQUIRE(getCardValueSymb(CV_QUEEN) == 'Q');
     REQUIRE(getCardValueSymb(CV_KING) == 'K');
     REQUIRE(getCardValueSymb(CV_ACE) == 'A');
+    REQUIRE(getCardValueSymb(CV_UNKNOWN) == '?');
 
     // parseCardValueSymb()
     REQUIRE(parseCardValueSymb('2') == CV_2);
@@ -46,10 +49,14 @@ TEST_CASE( "Card basic functions", "Cards" )
     REQUIRE(parseCardValueSymb('Q') == CV_QUEEN);
     REQUIRE(parseCardValueSymb('K') == CV_KING);
     REQUIRE(parseCardValueSymb('A') == CV_ACE);
+    REQUIRE(parseCardValueSymb('?') == CV_UNKNOWN);
 
     // parseCard()
     REQUIRE(parseCard("K+") == MAKE_CARD(CS_CLUBS, CV_KING));
     REQUIRE(parseCard("Q@") == MAKE_CARD(CS_HEARTS, CV_QUEEN));
+    REQUIRE(parseCard("Q?") == UNKNOWN_CARD);
+    REQUIRE(parseCard("??") == UNKNOWN_CARD);
+    REQUIRE(parseCard("??") == UNKNOWN_CARD);
 
     // Old style MAKE_CARD macro
     Card card = MAKE_CARD(CS_CLUBS, CV_KING);
@@ -61,6 +68,7 @@ TEST_CASE( "Card basic functions", "Cards" )
 
     // Card printing
     REQUIRE(getObjStr(card) == "K+");
+    REQUIRE(getObjStr(UNKNOWN_CARD) == "??");
 }
 
 TEST_CASE( "Card comparison", "Cards" )
